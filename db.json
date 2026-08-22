@@ -1,0 +1,88 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Premium Wireless Headphones",
+      "price": 199.99,
+      "images": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c30d30e?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop"
+      ],
+      "category": "Electronics",
+      "description": "Experience crystal-clear audio with active noise cancellation and 30-hour battery life.",
+      "rating": 4.8,
+      "inStock": true
+    },
+    {
+      "id": 2,
+      "name": "Minimalist Backpack",
+      "price": 89.99,
+      "images": [
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&crop=center",
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop&crop=left"
+      ],
+      "category": "Fashion",
+      "description": "Waterproof, durable backpack with laptop compartment and sleek design.",
+      "rating": 4.6,
+      "inStock": true
+    },
+    {
+      "id": 3,
+      "name": "Smart Fitness Tracker",
+      "price": 149.99,
+      "images": [
+        "https://images.unsplash.com/photo-1576243345690-4e4b79b63288?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1576243345690-4e4b79b63288?w=400&h=400&fit=crop&crop=right",
+        "https://images.unsplash.com/photo-1576243345690-4e4b79b63288?w=400&h=400&fit=crop&crop=left"
+      ],
+      "category": "Electronics",
+      "description": "Track your heart rate, sleep, and activity with this premium fitness band.",
+      "rating": 4.4,
+      "inStock": true
+    },
+    {
+      "id": 4,
+      "name": "Ceramic Coffee Mug Set",
+      "price": 34.99,
+      "images": [
+        "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=400&h=400&fit=crop&crop=right",
+        "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=400&h=400&fit=crop&crop=left"
+      ],
+      "category": "Home",
+      "description": "Set of 4 handcrafted ceramic mugs with minimalist design.",
+      "rating": 4.7,
+      "inStock": false
+    },
+    {
+      "id": 5,
+      "name": "Mechanical Keyboard",
+      "price": 129.99,
+      "images": [
+        "https://images.unsplash.com/photo-1595225476474-87563907a212?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1618384887929-16ec33d38f5d?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1595225476474-87563907a212?w=400&h=400&fit=crop&crop=left"
+      ],
+      "category": "Electronics",
+      "description": "RGB mechanical keyboard with Cherry MX switches and programmable keys.",
+      "rating": 4.9,
+      "inStock": true
+    },
+    {
+      "id": 6,
+      "name": "Yoga Mat Premium",
+      "price": 59.99,
+      "images": [
+        "https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=400&h=400&fit=crop",
+        "https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=400&h=400&fit=crop&crop=right",
+        "https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=400&h=400&fit=crop&crop=left"
+      ],
+      "category": "Sports",
+      "description": "Eco-friendly, non-slip yoga mat with alignment lines.",
+      "rating": 4.3,
+      "inStock": true
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+# ============================================
+# DEPENDENCIES
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============================================
+# BUILD OUTPUT
+# ============================================
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# ============================================
+# ENVIRONMENT VARIABLES
+# ============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# ============================================
+# IDE / EDITOR FILES
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ============================================
+# SYSTEM FILES
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ============================================
+# LOGS
+# ============================================
+logs/
+*.log
+*.log.*
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
+tmp/
+temp/
+*.tmp
+*.temp
+
+# ============================================
+# COVERAGE
+# ============================================
+coverage/
+*.lcov
+.nyc_output/
+
+# ============================================
+# MISC
+# ============================================
+*.pem
+*.p12
+*.key
+*.crt
+*.csr
+*.der
+*.cer
+*.p7b
+*.pfx
+
+# ============================================
+# PROJECT SPECIFIC
+# ============================================
+# Vercel
+.vercel/
+
+# Netlify
+.netlify/
+
+# Environment files (local overrides)
+.env.development
+.env.production
+
+# Local configuration
+*.local
+
+# Debug files
+*.log
+
+# Optional: If you use a specific package manager
+# pnpm
+.pnpm-store/
