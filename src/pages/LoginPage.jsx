@@ -1,27 +1,28 @@
 // src/pages/LoginPage.jsx
+// ============================================
+// LOGIN PAGE - SPLIT SCREEN (DESKTOP) / CENTERED FORM (MOBILE)
+// ============================================
+
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Eye, EyeOff } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
+import { Eye, EyeOff, CheckCircle, ShoppingBag, Shield, Clock } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the page user was trying to access (for redirect after login)
   const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!email || !password) {
-      return;
-    }
+    if (!email || !password) return;
 
     setIsSubmitting(true);
     const result = await login(email, password);
@@ -32,23 +33,104 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleSuccess = (credentialResponse) => {
+    const result = loginWithGoogle(credentialResponse);
+    if (result.success) {
+      navigate(from, { replace: true });
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.log('Google login failed');
+  };
+
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
-        {/* Header */}
+    <div className="min-h-screen flex">
+      
+      {/* ===== LEFT SIDE - BRANDING (DESKTOP ONLY) ===== */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-12 flex-col justify-between">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Welcome back
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to your account to continue shopping
-          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-3xl">🛍️</span>
+            <span className="text-2xl font-bold">ShopVerse</span>
+          </div>
         </div>
 
-        {/* Form */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {/* Email */}
+        <div className="flex-1 flex flex-col justify-center">
+          <h1 className="text-4xl font-bold mb-4">
+            Welcome Back! 👋
+          </h1>
+          <p className="text-lg text-indigo-100 max-w-md">
+            Sign in to continue shopping and discover amazing products curated just for you.
+          </p>
+
+          <div className="mt-8 space-y-3">
+            <div className="flex items-center gap-3 text-indigo-100">
+              <CheckCircle className="w-5 h-5 text-indigo-300" />
+              <span>Free shipping on orders over $50</span>
+            </div>
+            <div className="flex items-center gap-3 text-indigo-100">
+              <Shield className="w-5 h-5 text-indigo-300" />
+              <span>100% secure payments</span>
+            </div>
+            <div className="flex items-center gap-3 text-indigo-100">
+              <Clock className="w-5 h-5 text-indigo-300" />
+              <span>24/7 customer support</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-sm text-indigo-200">
+          <p>Trusted by 10,000+ customers worldwide</p>
+        </div>
+      </div>
+
+      {/* ===== RIGHT SIDE - LOGIN FORM (FULL WIDTH ON MOBILE) ===== */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-8 bg-white min-h-screen lg:min-h-0">
+        <div className="w-full max-w-md">
+          {/* Mobile Logo (visible only on small screens) */}
+          <div className="lg:hidden text-center mb-8">
+            <span className="text-3xl">🛍️</span>
+            <span className="text-2xl font-bold text-indigo-600 ml-2">ShopVerse</span>
+          </div>
+
+          {/* Form Header */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 text-center lg:text-left">
+              Welcome back
+            </h2>
+            <p className="text-gray-500 mt-1 text-center lg:text-left">
+              Sign in to your account to continue shopping
+            </p>
+          </div>
+
+          {/* Google Login Button */}
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap
+              theme="outline"
+              size="large"
+              shape="pill"
+              text="signin_with"
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white text-gray-400">
+                Or continue with email
+              </span>
+            </div>
+          </div>
+
+          {/* Email/Password Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
@@ -59,12 +141,11 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                 placeholder="you@example.com"
               />
             </div>
 
-            {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
@@ -76,7 +157,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 pr-10"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10 transition"
                   placeholder="••••••••"
                 />
                 <button
@@ -92,67 +173,44 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-          </div>
 
-          {/* Remember me & Forgot password */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`
+                w-full flex justify-center py-2.5 px-4 rounded-lg text-sm font-medium text-white transition
+                ${isSubmitting 
+                  ? 'bg-indigo-400 cursor-not-allowed' 
+                  : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
+              `}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in...
+                </span>
+              ) : (
+                'Sign In'
+              )}
+            </button>
 
-            <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
-              Forgot password?
-            </Link>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`
-              w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white
-              ${isSubmitting 
-                ? 'bg-indigo-400 cursor-not-allowed' 
-                : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
-            `}
-          >
-            {isSubmitting ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Signing in...
-              </span>
-            ) : (
-              'Sign in'
-            )}
-          </button>
-
-          {/* Register Link */}
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-center text-sm text-gray-500">
               Don't have an account?{' '}
-              <Link to="/register" className="text-indigo-600 hover:text-indigo-500 font-medium">
-                Create one
+              <Link to="/register" className="text-indigo-600 hover:text-indigo-700 font-medium">
+                Create one →
               </Link>
             </p>
-          </div>
 
-          {/* Demo credentials info */}
-          <div className="mt-4 p-3 bg-gray-50 rounded-md border border-gray-200">
-            <p className="text-xs text-gray-500 text-center">
-              💡 Demo: Use <span className="font-mono font-semibold">test@example.com</span> / <span className="font-mono font-semibold">password123</span>
-            </p>
-          </div>
-        </form>
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-100">
+              <p className="text-xs text-gray-400 text-center">
+                💡 Demo: <span className="font-mono font-semibold">test@example.com</span> / <span className="font-mono font-semibold">password123</span>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,11 @@
 // src/contexts/AuthContext.jsx
+// ============================================
+// AUTH CONTEXT - WITH GOOGLE LOGIN SUPPORT
+// ============================================
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import { loginUser, registerUser, getCurrentUser } from '../services/auth';
+import { jwtDecode } from 'jwt-decode'; // ✅ Add this for decoding Google tokens
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
@@ -16,6 +21,7 @@ export function AuthProvider({ children }) {
       try {
         const storedToken = localStorage.getItem('auth_token');
         if (storedToken) {
+          // ✅ Check if it's a Google token or our mock token
           const userData = await getCurrentUser(storedToken);
           setUserState(userData);
           setToken(storedToken);
@@ -31,7 +37,7 @@ export function AuthProvider({ children }) {
     initAuth();
   }, []);
 
-  // Login function
+  // ===== EXISTING LOGIN (Email/Password) =====
   const login = async (email, password) => {
     try {
       setLoading(true);
@@ -57,7 +63,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Register function
+  // ===== EXISTING REGISTER (Email/Password) =====
   const register = async (name, email, password) => {
     try {
       setLoading(true);
@@ -83,7 +89,45 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout function
+  // ===== ✅ NEW: LOGIN WITH GOOGLE =====
+  const loginWithGoogle = (credentialResponse) => {
+    try {
+      // Decode the Google JWT token to get user data
+      const decoded = jwtDecode(credentialResponse.credential);
+      
+      // Extract user data from Google response
+      const googleUser = {
+        id: decoded.sub, // Google's unique user ID
+        name: decoded.name,
+        email: decoded.email,
+        picture: decoded.picture,
+        provider: 'google',
+        createdAt: new Date().toISOString()
+      };
+
+      // Store the token
+      const googleToken = credentialResponse.credential;
+      setToken(googleToken);
+      localStorage.setItem('auth_token', googleToken);
+      
+      // Set user state
+      setUserState(googleUser);
+      
+      toast.success(`Welcome, ${googleUser.name}!`, {
+        icon: '👋',
+      });
+      
+      return { success: true, user: googleUser };
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('Google login failed. Please try again.', {
+        icon: '❌',
+      });
+      return { success: false, error: error.message };
+    }
+  };
+
+  // ===== EXISTING LOGOUT =====
   const logout = () => {
     setUserState(null);
     setToken(null);
@@ -93,7 +137,7 @@ export function AuthProvider({ children }) {
     });
   };
 
-  // Update user function
+  // ===== EXISTING SET USER =====
   const setUser = (newUser) => {
     setUserState(newUser);
   };
@@ -107,6 +151,7 @@ export function AuthProvider({ children }) {
     isAuthenticated,
     login,
     register,
+    loginWithGoogle, // ✅ Add new function
     logout,
     setUser,
   };
