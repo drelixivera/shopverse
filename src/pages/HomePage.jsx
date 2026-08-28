@@ -8,22 +8,26 @@ import SkeletonCard from '../components/common/SkeletonCard';
 import RecentViews from '../components/home/RecentViews';
 import NewsletterSignup from '../components/common/NewsletterSignup';
 import { Search, X, Filter } from 'lucide-react';
+import HeroImg from '../assets/HeroImg.jpg'
 
 export default function HomePage() {
+  // State Variables
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('featured');
-  const [showFilters, setShowFilters] = useState(false);
+  const [debouncedSearch, setDebouncedSearch] = useState(''); // search term after delay
+  const [selectedCategory, setSelectedCategory] = useState('All');// selected category filter
+  const [sortBy, setSortBy] = useState('featured'); // sorting option
+  const [showFilters, setShowFilters] = useState(false); //show filter on mobile
 
+  //categories
   const categories = useMemo(() => {
     const cats = products.map(p => p.category);
     return ['All', ...new Set(cats)];
   }, [products]);
 
+  //search debouncing
   const debouncedSetSearch = useCallback(
     debounce((value) => {
       setDebouncedSearch(value);
@@ -43,18 +47,19 @@ export default function HomePage() {
     debouncedSetSearch.cancel();
   };
 
+  // fetching products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = await productService.getAllProducts();
-        setProducts(data);
+        const data = await productService.getAllProducts(); // fetches data
+        setProducts(data); // stores product
         setError(null);
       } catch (err) {
         setError('Failed to load products. Please try again.');
         console.error(err);
       } finally {
-        setLoading(false);
+        setLoading(false); // hide skeleton, shows products
       }
     };
 
@@ -67,9 +72,11 @@ export default function HomePage() {
     };
   }, [debouncedSetSearch]);
 
+  // Filtering and sorting
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
+    // Filter by search
     if (debouncedSearch.trim()) {
       const term = debouncedSearch.toLowerCase().trim();
       result = result.filter(product =>
@@ -79,12 +86,14 @@ export default function HomePage() {
       );
     }
 
+    // Filter by category
     if (selectedCategory !== 'All') {
       result = result.filter(product =>
         product.category === selectedCategory
       );
     }
 
+    // sort
     switch (sortBy) {
       case 'price-low':
         result.sort((a, b) => a.price - b.price);
@@ -105,9 +114,11 @@ export default function HomePage() {
     return result;
   }, [products, debouncedSearch, selectedCategory, sortBy]);
 
+  // Loading State
   if (loading) {
     return (
       <div>
+        {/* Hero Loading Skeleton */}
         <div className="h-64 bg-gray-200 rounded-2xl mb-10 animate-pulse"></div>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
@@ -116,6 +127,7 @@ export default function HomePage() {
           </div>
           <div className="w-full md:w-80 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
         </div>
+        {/* Product Grid Loading Skeletons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
             <SkeletonCard key={i} />
@@ -125,6 +137,7 @@ export default function HomePage() {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="text-center py-12">
@@ -139,10 +152,12 @@ export default function HomePage() {
     );
   }
 
+  // displaying pages
   return (
     <div>
-  {/* ===== HERO SECTION ===== */}
+    {/* ===== HERO SECTION ===== */}
 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-10">
+    {/* Hero Content */}
   <div className="flex flex-col lg:flex-row items-center">
     {/* Left - Content */}
     <div className="flex-1 p-8 md:p-12 lg:p-16">
@@ -236,12 +251,12 @@ export default function HomePage() {
       <div className="relative">
         {/* Main Product Image */}
         <img
-          src="https://images.unsplash.com/photo-1505740420928-5e560c30d30e?w=500&h=500&fit=crop&crop=center"
-          alt="Premium Headphones"
+          src={HeroImg}
+          alt="Premium Wrist watch"
           className="w-56 h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 object-cover rounded-2xl shadow-xl hover:scale-105 transition-transform duration-300"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = 'https://picsum.photos/seed/headphones/500/500';
+            e.target.src = 'RM-350.jpeg';
           }}
         />
         {/* Floating Badge - Top Right */}
@@ -257,7 +272,7 @@ export default function HomePage() {
   </div>
 </div>
 
-      {/* Header */}
+      {/* Featured Products Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Featured Products</h1>
@@ -296,7 +311,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Filter Bar */}
+      {/* Category Filter Bar */}
       <div className={`${showFilters ? 'block' : 'hidden md:block'} mb-6`}>
         <div className="flex flex-wrap items-center gap-3 p-3 bg-gray-50 rounded-lg">
           <div className="flex flex-wrap items-center gap-1.5">

@@ -1,11 +1,6 @@
-// src/App.jsx
-// ============================================
-// APP - WITHOUT DARK MODE
-// ============================================
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { GoogleOAuthProvider } from '@react-oauth/google'; // ✅ Keep this for Google Login
+import { GoogleOAuthProvider } from '@react-oauth/google'; 
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
@@ -23,15 +18,13 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 
-// Get Google Client ID from environment variables
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
   return (
-    // ✅ GoogleOAuthProvider for Google Login
+    // GoogleOAuthProvider - enables Google Login
     <GoogleOAuthProvider clientId={googleClientId}>
-      {/* ❌ Removed ThemeProvider */}
-      <Router>
+      <Router> 
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
@@ -63,11 +56,13 @@ function App() {
               />
               <Layout>
                 <Routes>
+                  {/* Public Routes */}
                   <Route path="/" element={<HomePage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/product/:id" element={<ProductDetailPage />} />
-                  
+
+                  {/* Protected Routes */}
                   <Route path="/profile" element={
                     <ProtectedRoute>
                       <ProfilePage />
@@ -113,4 +108,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 

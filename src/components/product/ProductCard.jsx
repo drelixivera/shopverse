@@ -1,13 +1,14 @@
 // src/components/product/ProductCard.jsx
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../contexts/CartContext';
-import { ShoppingCart, Star } from 'lucide-react';
-import WishlistButton from '../wishlist/WishlistButton';
-import ProductImage from '../common/ProductImage';
-import AnimatedPrice from '../common/AnimatedPrice';
-import toast from 'react-hot-toast';
+import { useState } from 'react'; // manage components state
+import { useNavigate } from 'react-router-dom'; // navigate to product details on click
+import { useCart } from '../../contexts/CartContext'; // access cart function
+import { ShoppingCart, Star } from 'lucide-react'; // icons
+import WishlistButton from '../wishlist/WishlistButton'; // Heart button for wishlist
+import ProductImage from '../common/ProductImage'; // image component with fallback
+import AnimatedPrice from '../common/AnimatedPrice'; // Price with count-up animation
+import toast from 'react-hot-toast'; // Shows success notification
 
+// Higlight matching search texts 
 const highlightText = (text, searchTerm) => {
   if (!searchTerm || !text) return text;
   const term = searchTerm.toLowerCase().trim();
@@ -21,10 +22,12 @@ const highlightText = (text, searchTerm) => {
 };
 
 export default function ProductCard({ product, searchTerm = '' }) {
+  // state & hooks
   const { addItem } = useCart();
   const navigate = useNavigate();
   const [isAdding, setIsAdding] = useState(false);
 
+  // Handle Add to Cart
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -45,15 +48,18 @@ export default function ProductCard({ product, searchTerm = '' }) {
     e.stopPropagation();
   };
 
+  // handle card click
   const handleCardClick = () => {
     navigate(`/product/${product.id}`);
   };
 
   return (
+    // card container with handle card click function
     <div 
       onClick={handleCardClick}
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative cursor-pointer group"
     >
+      {/* Wishlist Button Container */}
       <div className="absolute top-2 right-2 z-10" onClick={handleWishlistClick}>
         <WishlistButton product={product} />
       </div>
@@ -72,6 +78,7 @@ export default function ProductCard({ product, searchTerm = '' }) {
         )}
       </div>
 
+        {/* Product Info */}
       <div className="p-4">
         <span className="text-sm text-gray-500 uppercase tracking-wider">
           {product.category}
