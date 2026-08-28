@@ -1,14 +1,17 @@
 // src/components/product/ProductCard.jsx
-import { useState } from 'react'; // manage components state
-import { useNavigate } from 'react-router-dom'; // navigate to product details on click
-import { useCart } from '../../contexts/CartContext'; // access cart function
-import { ShoppingCart, Star } from 'lucide-react'; // icons
-import WishlistButton from '../wishlist/WishlistButton'; // Heart button for wishlist
-import ProductImage from '../common/ProductImage'; // image component with fallback
-import AnimatedPrice from '../common/AnimatedPrice'; // Price with count-up animation
-import toast from 'react-hot-toast'; // Shows success notification
+// ============================================
+// PRODUCT CARD - FIXED WISHLIST NAVIGATION
+// ============================================
 
-// Higlight matching search texts 
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../contexts/CartContext';
+import { ShoppingCart, Star } from 'lucide-react';
+import WishlistButton from '../wishlist/WishlistButton';
+import ProductImage from '../common/ProductImage';
+import AnimatedPrice from '../common/AnimatedPrice';
+import toast from 'react-hot-toast';
+
 const highlightText = (text, searchTerm) => {
   if (!searchTerm || !text) return text;
   const term = searchTerm.toLowerCase().trim();
@@ -22,12 +25,10 @@ const highlightText = (text, searchTerm) => {
 };
 
 export default function ProductCard({ product, searchTerm = '' }) {
-  // state & hooks
   const { addItem } = useCart();
   const navigate = useNavigate();
   const [isAdding, setIsAdding] = useState(false);
 
-  // Handle Add to Cart
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -35,71 +36,71 @@ export default function ProductCard({ product, searchTerm = '' }) {
     addItem(product, 1);
     toast.success(`${product.name} added to cart!`, {
       icon: '🛒',
-      style: {
-        background: '#22c55e',
-        color: '#fff',
-      },
     });
     setTimeout(() => setIsAdding(false), 800);
   };
 
+  // ✅ Fix: Stop propagation so it doesn't trigger the Link
   const handleWishlistClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    // The WishlistButton handles the actual toggle internally
   };
 
-  // handle card click
   const handleCardClick = () => {
     navigate(`/product/${product.id}`);
   };
 
   return (
-    // card container with handle card click function
     <div 
       onClick={handleCardClick}
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative cursor-pointer group"
     >
-      {/* Wishlist Button Container */}
-      <div className="absolute top-2 right-2 z-10" onClick={handleWishlistClick}>
+      {/* Wishlist Button - Fixed */}
+      <div 
+        className="absolute top-1.5 right-1.5 z-10" 
+        onClick={handleWishlistClick}
+        onMouseDown={(e) => e.stopPropagation()} // ✅ Extra safety
+      >
         <WishlistButton product={product} />
       </div>
 
       {/* Product Image */}
-      <div className="relative h-48 overflow-hidden bg-gray-100">
+      <div className="relative h-36 sm:h-40 overflow-hidden bg-gray-100">
         <ProductImage 
           product={product} 
           className="w-full h-full group-hover:scale-105 transition-transform duration-300"
-          fallbackClassName="text-4xl"
+          fallbackClassName="text-3xl"
         />
         {!product.inStock && (
-          <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+          <span className="absolute top-1.5 left-1.5 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
             Out of Stock
           </span>
         )}
       </div>
 
-        {/* Product Info */}
-      <div className="p-4">
-        <span className="text-sm text-gray-500 uppercase tracking-wider">
+      {/* Content */}
+      <div className="p-2.5 sm:p-3">
+        <span className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider">
           {product.category}
         </span>
 
-        <h3 className="text-lg font-semibold text-gray-800 mt-1 hover:text-indigo-600 transition">
+        <h3 className="text-xs sm:text-sm font-semibold text-gray-800 mt-0.5 hover:text-indigo-600 transition line-clamp-2 leading-tight">
           {highlightText(product.name, searchTerm)}
         </h3>
 
         {product.description && (
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+          <p className="text-[10px] sm:text-xs text-gray-600 mt-0.5 line-clamp-1 hidden sm:block">
             {highlightText(product.description, searchTerm)}
           </p>
         )}
 
-        <div className="flex items-center mt-2">
+        <div className="flex items-center mt-1">
           <div className="flex text-yellow-400">
             {Array.from({ length: 5 }, (_, i) => (
               <Star 
                 key={i}
-                className={`w-4 h-4 ${
+                className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${
                   i < Math.floor(product.rating) 
                     ? 'fill-current' 
                     : 'text-gray-300'
@@ -107,13 +108,13 @@ export default function ProductCard({ product, searchTerm = '' }) {
               />
             ))}
           </div>
-          <span className="text-sm text-gray-600 ml-2">
+          <span className="text-[10px] sm:text-xs text-gray-500 ml-1">
             ({product.rating})
           </span>
         </div>
 
-        <div className="flex items-center justify-between mt-4">
-          <span className="text-2xl font-bold text-gray-900">
+        <div className="flex items-center justify-between mt-2">
+          <span className="text-sm sm:text-base font-bold text-gray-900">
             <AnimatedPrice price={product.price} />
           </span>
           
@@ -121,7 +122,7 @@ export default function ProductCard({ product, searchTerm = '' }) {
             onClick={handleAddToCart}
             disabled={!product.inStock || isAdding}
             className={`
-              flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200
+              flex items-center gap-1 px-2 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium transition-all duration-200
               ${product.inStock 
                 ? isAdding 
                   ? 'bg-green-500 hover:bg-green-500 text-white' 
@@ -129,8 +130,8 @@ export default function ProductCard({ product, searchTerm = '' }) {
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
             `}
           >
-            <ShoppingCart className="w-4 h-4" />
-            {isAdding ? 'Added!' : 'Add to Cart'}
+            <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            {isAdding ? 'Added!' : 'Add'}
           </button>
         </div>
       </div>

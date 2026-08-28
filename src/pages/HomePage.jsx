@@ -340,24 +340,26 @@ export default function HomePage() {
         </div>
       ) : (
         <>
-          {/* Product Grid */}
-          <div
-            id="products"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          >
-            {filteredProducts.map((product, index) => (
-              <div
-                key={product.id}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <ProductCard
-                  product={product}
-                  searchTerm={debouncedSearch}
-                />
-              </div>
-            ))}
-          </div>
+          {/* Product Grid - Tighter Layout */}
+<div
+  id="products"
+  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
+>
+  {filteredProducts.map((product, index) => (
+    <div
+      key={product.id}
+      className="animate-fade-in"
+      style={{ animationDelay: `${index * 50}ms` }}
+    >
+      <Link to={`/product/${product.id}`} className="block">
+        <ProductCard
+          product={product}
+          searchTerm={debouncedSearch}
+        />
+      </Link>
+    </div>
+  ))}
+</div>
 
           {/* Recent Views */}
           <RecentViews />
