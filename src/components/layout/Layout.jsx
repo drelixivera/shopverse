@@ -1,11 +1,11 @@
 // src/components/layout/Layout.jsx
 // ============================================
-// LAYOUT - WITH FLOATING CART BUTTON
+// LAYOUT - WITH FLOATING ACTION MENU
 // ============================================
 
 import Navbar from './Navbar';
 import Footer from './Footer';
-import FloatingCartButton from '../common/FloatingCartButton';
+import FloatingActionMenu from '../common/FloatingActionMenu';
 
 export default function Layout({ children }) {
   return (
@@ -15,7 +15,7 @@ export default function Layout({ children }) {
         {children}
       </main>
       <Footer />
-      <FloatingCartButton /> {/* ✅ Add this */}
+      <FloatingActionMenu />
     </div>
   );
 }

@@ -72,6 +72,7 @@ const cartReducer = (state, action) => {
   }
 };
 
+//context provider
 export function CartProvider({ children }) {
   const initialState = {
     items: JSON.parse(localStorage.getItem('cart') || '[]')

@@ -8,7 +8,6 @@ import SkeletonCard from '../components/common/SkeletonCard';
 import RecentViews from '../components/home/RecentViews';
 import NewsletterSignup from '../components/common/NewsletterSignup';
 import { Search, X, Filter } from 'lucide-react';
-import HeroImg from '../assets/HeroImg.jpg'
 
 export default function HomePage() {
   // State Variables
