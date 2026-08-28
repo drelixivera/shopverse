@@ -155,118 +155,60 @@ export default function HomePage() {
   // displaying pages
   return (
     <div>
-    {/* ===== HERO SECTION ===== */}
-<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-10">
-    {/* Hero Content */}
-  <div className="flex flex-col lg:flex-row items-center">
-    {/* Left - Content */}
-    <div className="flex-1 p-8 md:p-12 lg:p-16">
+    {/* ===== HERO SECTION - IMAGE DRIVEN ===== */}
+<div className="relative rounded-2xl overflow-hidden mb-12 h-[400px] md:h-[500px] animate-fade-in">
+  {/* Background Image */}
+  <div 
+    className="absolute inset-0 bg-cover bg-center"
+    style={{
+      backgroundImage: 'url(https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200)',
+    }}
+  ></div>
+  
+  {/* Overlay - creates contrast so text is readable */}
+  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+  
+  {/* Floating Stats - Top Right Corner */}
+  <div className="absolute top-4 right-4 md:top-6 md:right-6 z-10 bg-white/10 backdrop-blur-md rounded-xl px-4 py-2 text-white text-sm border border-white/20 hidden sm:block">
+    <span className="font-bold text-yellow-300">★ 4.8/5</span>
+    <span className="text-white/70 ml-2">• 10K+ Reviews</span>
+  </div>
+  
+  {/* Content */}
+  <div className="relative z-10 h-full flex items-center px-6 md:px-12 lg:px-16">
+    <div className="max-w-xl">
       {/* Badge */}
-      <div className="inline-block bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
-        WELCOME TO SHOPVERSE
-      </div>
-
+      <span className="inline-block text-xs font-semibold tracking-widest text-yellow-300 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full mb-4 animate-pulse">
+        ✨ SUMMER COLLECTION
+      </span>
+      
       {/* Heading */}
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-3">
-        Quality <br />
-        <span className="text-indigo-600">Products.</span>
+      <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-3">
+        Elevate Your
+        <span className="text-yellow-300 block">Style Game</span>
       </h1>
-
+      
       {/* Subtitle */}
-      <p className="text-gray-600 text-sm md:text-base max-w-md mb-6">
-        Discover a wide range of high-quality products carefully selected for your lifestyle.
+      <p className="text-base md:text-lg text-gray-200 max-w-lg mb-6">
+        Discover premium products handpicked for quality, style, and value.
       </p>
-
-      {/* CTA Buttons */}
-      <div className="flex flex-wrap items-center gap-4 mb-8">
+      
+      {/* CTAs */}
+      <div className="flex flex-wrap gap-4">
+        {/* Primary CTA */}
         <Link
           to="#products"
-          className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-md hover:shadow-lg"
+          className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200"
         >
-          Shop Now →
+          Explore Now →
         </Link>
+        {/* Secondary CTA */}
         <Link
-          to="#products"
-          className="text-gray-700 hover:text-indigo-600 font-medium transition flex items-center gap-1"
+          to="/wishlist"
+          className="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-8 py-3 rounded-lg font-medium hover:bg-white/20 transition hover:-translate-y-0.5 transform duration-200"
         >
-          Explore Collection
+          View Wishlist
         </Link>
-      </div>
-
-      {/* Trust Badges - Row */}
-      <div className="flex flex-wrap items-center gap-6 text-sm">
-        <div className="flex items-center gap-2 text-gray-600">
-          <span className="text-indigo-500 text-lg">✓</span>
-          Premium Quality
-        </div>
-        <div className="flex items-center gap-2 text-gray-600">
-          <span className="text-indigo-500 text-lg">✓</span>
-          Secure Payments
-        </div>
-        <div className="flex items-center gap-2 text-gray-600">
-          <span className="text-indigo-500 text-lg">✓</span>
-          Easy Returns
-        </div>
-        <div className="flex items-center gap-2 text-gray-600">
-          <span className="text-indigo-500 text-lg">✓</span>
-          Customer Support
-        </div>
-      </div>
-
-      {/* Trust Badges - Icons Row */}
-      <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-gray-100">
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-2xl">🚚</span>
-          <div>
-            <p className="font-medium text-gray-700 text-xs">FREE SHIPPING</p>
-            <p className="text-gray-400 text-xs">On orders over $50</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-2xl">🔄</span>
-          <div>
-            <p className="font-medium text-gray-700 text-xs">30 DAYS RETURNS</p>
-            <p className="text-gray-400 text-xs">No hassle returns</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-2xl">🔒</span>
-          <div>
-            <p className="font-medium text-gray-700 text-xs">SECURE PAYMENT</p>
-            <p className="text-gray-400 text-xs">100% secure checkout</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-2xl">💬</span>
-          <div>
-            <p className="font-medium text-gray-700 text-xs">24/7 SUPPORT</p>
-            <p className="text-gray-400 text-xs">We're here to help</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {/* Right - Single Large Product Image */}
-    <div className="flex-1 bg-gradient-to-br from-indigo-50 to-purple-50 p-8 lg:p-12 flex items-center justify-center min-h-[250px] lg:min-h-[400px]">
-      <div className="relative">
-        {/* Main Product Image */}
-        <img
-          src={HeroImg}
-          alt="Premium Wrist watch"
-          className="w-56 h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 object-cover rounded-2xl shadow-xl hover:scale-105 transition-transform duration-300"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = 'RM-350.jpeg';
-          }}
-        />
-        {/* Floating Badge - Top Right */}
-        <div className="absolute -top-3 -right-3 bg-white rounded-full shadow-lg px-3 py-1.5 text-xs font-bold text-indigo-600 border border-indigo-100">
-          TRUSTED BY THOUSANDS
-        </div>
-        {/* Rating Badge - Bottom */}
-        <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white rounded-full shadow-lg px-4 py-1.5 text-xs font-bold text-green-600 border border-green-100 whitespace-nowrap">
-          ★ 4.8/5 • 10K+ Reviews
-        </div>
       </div>
     </div>
   </div>
