@@ -1,13 +1,13 @@
 // src/pages/LoginPage.jsx
 // ============================================
-// LOGIN PAGE - SPLIT SCREEN (DESKTOP) / CENTERED FORM (MOBILE)
+// LOGIN PAGE - POLISHED
 // ============================================
 
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
-import { Eye, EyeOff, CheckCircle, ShoppingBag, Shield, Clock } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -45,66 +45,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      
-      {/* ===== LEFT SIDE - BRANDING (DESKTOP ONLY) ===== */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-12 flex-col justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-3xl">🛍️</span>
-            <span className="text-2xl font-bold">ShopVerse</span>
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col justify-center">
-          <h1 className="text-4xl font-bold mb-4">
-            Welcome Back! 👋
-          </h1>
-          <p className="text-lg text-indigo-100 max-w-md">
-            Sign in to continue shopping and discover amazing products curated just for you.
-          </p>
-
-          <div className="mt-8 space-y-3">
-            <div className="flex items-center gap-3 text-indigo-100">
-              <CheckCircle className="w-5 h-5 text-indigo-300" />
-              <span>Free shipping on orders over $50</span>
-            </div>
-            <div className="flex items-center gap-3 text-indigo-100">
-              <Shield className="w-5 h-5 text-indigo-300" />
-              <span>100% secure payments</span>
-            </div>
-            <div className="flex items-center gap-3 text-indigo-100">
-              <Clock className="w-5 h-5 text-indigo-300" />
-              <span>24/7 customer support</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-sm text-indigo-200">
-          <p>Trusted by 10,000+ customers worldwide</p>
-        </div>
-      </div>
-
-      {/* ===== RIGHT SIDE - LOGIN FORM (FULL WIDTH ON MOBILE) ===== */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-8 bg-white min-h-screen lg:min-h-0">
-        <div className="w-full max-w-md">
-          {/* Mobile Logo (visible only on small screens) */}
-          <div className="lg:hidden text-center mb-8">
-            <span className="text-3xl">🛍️</span>
-            <span className="text-2xl font-bold text-indigo-600 ml-2">ShopVerse</span>
-          </div>
-
-          {/* Form Header */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 text-center lg:text-left">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
+      <div className="w-full max-w-md">
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <Link to="/" className="text-3xl font-bold text-indigo-600">
+              ShopVerse
+            </Link>
+            <h2 className="text-2xl font-bold text-gray-900 mt-4">
               Welcome back
             </h2>
-            <p className="text-gray-500 mt-1 text-center lg:text-left">
+            <p className="text-gray-500 text-sm mt-1">
               Sign in to your account to continue shopping
             </p>
           </div>
 
-          {/* Google Login Button */}
+          {/* Google Login */}
           <div className="flex justify-center">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
@@ -123,13 +81,11 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-400">
-                Or continue with email
-              </span>
+              <span className="px-4 bg-white text-gray-400">Or continue with email</span>
             </div>
           </div>
 
-          {/* Email/Password Form */}
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -141,7 +97,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                 placeholder="you@example.com"
               />
             </div>
@@ -157,7 +113,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10 transition"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10 transition"
                   placeholder="••••••••"
                 />
                 <button
@@ -181,7 +137,7 @@ export default function LoginPage() {
                 w-full flex justify-center py-2.5 px-4 rounded-lg text-sm font-medium text-white transition
                 ${isSubmitting 
                   ? 'bg-indigo-400 cursor-not-allowed' 
-                  : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
+                  : 'bg-indigo-600 hover:bg-indigo-700'}
               `}
             >
               {isSubmitting ? (

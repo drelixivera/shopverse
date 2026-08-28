@@ -1,13 +1,13 @@
 // src/pages/RegisterPage.jsx
 // ============================================
-// REGISTER PAGE - SPLIT SCREEN (DESKTOP) / CENTERED FORM (MOBILE)
+// REGISTER PAGE - POLISHED
 // ============================================
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
-import { Eye, EyeOff, Check, X, CheckCircle, ShoppingBag, Shield, Clock } from 'lucide-react';
+import { Eye, EyeOff, Check, X } from 'lucide-react';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -54,66 +54,24 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      
-      {/* ===== LEFT SIDE - BRANDING (DESKTOP ONLY) ===== */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-12 flex-col justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-3xl">🛍️</span>
-            <span className="text-2xl font-bold">ShopVerse</span>
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col justify-center">
-          <h1 className="text-4xl font-bold mb-4">
-            Join the Family! 🎉
-          </h1>
-          <p className="text-lg text-indigo-100 max-w-md">
-            Create your account and start discovering amazing products curated just for you.
-          </p>
-
-          <div className="mt-8 space-y-3">
-            <div className="flex items-center gap-3 text-indigo-100">
-              <CheckCircle className="w-5 h-5 text-indigo-300" />
-              <span>Free shipping on orders over $50</span>
-            </div>
-            <div className="flex items-center gap-3 text-indigo-100">
-              <Shield className="w-5 h-5 text-indigo-300" />
-              <span>100% secure payments</span>
-            </div>
-            <div className="flex items-center gap-3 text-indigo-100">
-              <Clock className="w-5 h-5 text-indigo-300" />
-              <span>24/7 customer support</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-sm text-indigo-200">
-          <p>Join 10,000+ happy customers</p>
-        </div>
-      </div>
-
-      {/* ===== RIGHT SIDE - REGISTER FORM (FULL WIDTH ON MOBILE) ===== */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-8 bg-white min-h-screen lg:min-h-0">
-        <div className="w-full max-w-md">
-          {/* Mobile Logo */}
-          <div className="lg:hidden text-center mb-8">
-            <span className="text-3xl">🛍️</span>
-            <span className="text-2xl font-bold text-indigo-600 ml-2">ShopVerse</span>
-          </div>
-
-          {/* Form Header */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 text-center lg:text-left">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
+      <div className="w-full max-w-md">
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <Link to="/" className="text-3xl font-bold text-indigo-600">
+              ShopVerse
+            </Link>
+            <h2 className="text-2xl font-bold text-gray-900 mt-4">
               Create Account
             </h2>
-            <p className="text-gray-500 mt-1 text-center lg:text-left">
+            <p className="text-gray-500 text-sm mt-1">
               Join ShopVerse and start shopping
             </p>
           </div>
 
-          {/* Google Login Button */}
+          {/* Google Login */}
           <div className="flex justify-center">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
@@ -132,13 +90,11 @@ export default function RegisterPage() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-400">
-                Or sign up with email
-              </span>
+              <span className="px-4 bg-white text-gray-400">Or sign up with email</span>
             </div>
           </div>
 
-          {/* Email/Password Form */}
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -150,7 +106,7 @@ export default function RegisterPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                 placeholder="John Doe"
               />
             </div>
@@ -165,7 +121,7 @@ export default function RegisterPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                 placeholder="you@example.com"
               />
             </div>
@@ -181,7 +137,7 @@ export default function RegisterPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10 transition"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10 transition"
                   placeholder="••••••••"
                 />
                 <button
@@ -221,7 +177,7 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={`
-                  mt-1 block w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition
+                  mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition
                   ${confirmPassword && !passwordsMatch ? 'border-red-500' : 'border-gray-200'}
                 `}
                 placeholder="••••••••"
@@ -238,7 +194,7 @@ export default function RegisterPage() {
                 w-full flex justify-center py-2.5 px-4 rounded-lg text-sm font-medium text-white transition
                 ${isSubmitting || !allChecksPassed || !passwordsMatch || !name || !email
                   ? 'bg-indigo-400 cursor-not-allowed' 
-                  : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}
+                  : 'bg-indigo-600 hover:bg-indigo-700'}
               `}
             >
               {isSubmitting ? (
