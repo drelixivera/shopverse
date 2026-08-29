@@ -1,4 +1,8 @@
 // src/pages/ProductDetailPage.jsx
+// ============================================
+// PRODUCT DETAIL PAGE - WITH QUANTITY SELECTOR
+// ============================================
+
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { productService } from '../services/api';
@@ -9,7 +13,7 @@ import WishlistButton from '../components/wishlist/WishlistButton';
 import ImageGallery from '../components/product/ImageGallery';
 import RelatedProducts from '../components/product/RelatedProducts';
 import { addRecentView } from '../services/recentViews';
-import { ShoppingCart, Star, ArrowLeft, Truck, Shield, RotateCcw } from 'lucide-react';
+import { ShoppingCart, Star, ArrowLeft, Truck, Shield, RotateCcw, Minus, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function ProductDetailPage() {
@@ -17,6 +21,8 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
   const { addItem } = useCart();
 
   useEffect(() => {
@@ -26,6 +32,7 @@ export default function ProductDetailPage() {
         const data = await productService.getProductById(id);
         setProduct(data);
         setError(null);
+        setQuantity(1);
         
         if (data) {
           addRecentView(data);
@@ -41,11 +48,19 @@ export default function ProductDetailPage() {
     fetchProduct();
   }, [id]);
 
+  const handleQuantityChange = (value) => {
+    setQuantity(Math.max(1, value));
+  };
+
   const handleAddToCart = () => {
-    addItem(product, 1);
-    toast.success(`${product.name} added to cart!`, {
+    if (!product.inStock) return;
+
+    setIsAdding(true);
+    addItem(product, quantity);
+    toast.success(`${quantity} × ${product.name} added to cart!`, {
       icon: '🛒',
     });
+    setTimeout(() => setIsAdding(false), 800);
   };
 
   if (loading) {
@@ -135,12 +150,18 @@ export default function ProductDetailPage() {
                 Out of Stock
               </span>
             )}
+            {product.inStock && (
+              <span className="ml-3 bg-green-500 text-white text-sm px-3 py-1 rounded-full">
+                In Stock
+              </span>
+            )}
           </div>
 
           <p className="mt-4 text-gray-600">
             {product.description}
           </p>
 
+          {/* Features */}
           <div className="mt-6 space-y-2">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Truck className="w-4 h-4 text-indigo-500" />
@@ -156,18 +177,47 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
+          {/* Quantity Selector */}
+          {product.inStock && (
+            <div className="mt-6 flex items-center gap-4">
+              <span className="text-sm font-medium text-gray-700">Quantity:</span>
+              <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => handleQuantityChange(quantity - 1)}
+                  className="px-3 py-2 hover:bg-gray-50 transition text-gray-600"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-12 text-center font-medium text-gray-800">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => handleQuantityChange(quantity + 1)}
+                  className="px-3 py-2 hover:bg-gray-50 transition text-gray-600"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Add to Cart Button */}
           <button
             onClick={handleAddToCart}
-            disabled={!product.inStock}
+            disabled={!product.inStock || isAdding}
             className={`
               mt-6 w-full flex items-center justify-center gap-2 py-3 px-6 rounded-lg text-white font-semibold transition
               ${product.inStock 
-                ? 'bg-indigo-600 hover:bg-indigo-700' 
+                ? isAdding 
+                  ? 'bg-green-500 hover:bg-green-500' 
+                  : 'bg-indigo-600 hover:bg-indigo-700'
                 : 'bg-gray-400 cursor-not-allowed'}
             `}
           >
             <ShoppingCart className="w-5 h-5" />
-            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+            {isAdding ? 'Added!' : product.inStock ? `Add to Cart` : 'Out of Stock'}
           </button>
         </div>
       </div>
@@ -177,7 +227,7 @@ export default function ProductDetailPage() {
         <ReviewsSection productId={parseInt(id)} />
       </div>
 
-      {/* Related Products Section */}
+      {/* Related Products */}
       <RelatedProducts 
         currentProductId={product.id} 
         category={product.category} 

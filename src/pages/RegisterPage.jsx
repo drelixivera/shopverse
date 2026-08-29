@@ -1,6 +1,6 @@
 // src/pages/RegisterPage.jsx
 // ============================================
-// REGISTER PAGE - WITH CLICKABLE TEXT LOGO
+// REGISTER PAGE
 // ============================================
 
 import { useState } from 'react';
