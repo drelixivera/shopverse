@@ -1,13 +1,13 @@
 // src/pages/RegisterPage.jsx
 // ============================================
-// REGISTER PAGE - POLISHED
+// REGISTER PAGE - SPICED UP ✨ (No Logo)
 // ============================================
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
-import { Eye, EyeOff, Check, X } from 'lucide-react';
+import { Eye, EyeOff, Check, X, ArrowRight, Sparkles } from 'lucide-react';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -54,16 +54,19 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
-      <div className="w-full max-w-md">
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          {/* Logo */}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 relative overflow-hidden">
+      
+      {/* ===== DECORATIVE SHAPES ===== */}
+      <div className="absolute top-[-100px] right-[-100px] w-72 h-72 bg-indigo-200/30 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-[-100px] left-[-100px] w-72 h-72 bg-purple-200/30 rounded-full blur-3xl"></div>
+
+      {/* ===== CARD ===== */}
+      <div className="relative w-full max-w-md">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/50">
+          
+          {/* ===== HEADER (No Logo) ===== */}
           <div className="text-center mb-8">
-            <Link to="/" className="text-3xl font-bold text-indigo-600">
-              ShopVerse
-            </Link>
-            <h2 className="text-2xl font-bold text-gray-900 mt-4">
+            <h2 className="text-2xl font-bold text-gray-900">
               Create Account
             </h2>
             <p className="text-gray-500 text-sm mt-1">
@@ -90,7 +93,9 @@ export default function RegisterPage() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-400">Or sign up with email</span>
+              <span className="px-4 bg-white/80 backdrop-blur-sm text-gray-400">
+                Or sign up with email
+              </span>
             </div>
           </div>
 
@@ -106,7 +111,7 @@ export default function RegisterPage() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                className="mt-1 block w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white/70 backdrop-blur-sm"
                 placeholder="John Doe"
               />
             </div>
@@ -121,7 +126,7 @@ export default function RegisterPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                className="mt-1 block w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white/70 backdrop-blur-sm"
                 placeholder="you@example.com"
               />
             </div>
@@ -137,7 +142,7 @@ export default function RegisterPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10 transition"
+                  className="mt-1 block w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent pr-10 transition bg-white/70 backdrop-blur-sm"
                   placeholder="••••••••"
                 />
                 <button
@@ -177,7 +182,7 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={`
-                  mt-1 block w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition
+                  mt-1 block w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white/70 backdrop-blur-sm
                   ${confirmPassword && !passwordsMatch ? 'border-red-500' : 'border-gray-200'}
                 `}
                 placeholder="••••••••"
@@ -191,10 +196,10 @@ export default function RegisterPage() {
               type="submit"
               disabled={isSubmitting || !allChecksPassed || !passwordsMatch || !name || !email}
               className={`
-                w-full flex justify-center py-2.5 px-4 rounded-lg text-sm font-medium text-white transition
+                w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium text-white transition-all duration-200
                 ${isSubmitting || !allChecksPassed || !passwordsMatch || !name || !email
                   ? 'bg-indigo-400 cursor-not-allowed' 
-                  : 'bg-indigo-600 hover:bg-indigo-700'}
+                  : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl hover:-translate-y-0.5'}
               `}
             >
               {isSubmitting ? (
@@ -206,14 +211,18 @@ export default function RegisterPage() {
                   Creating account...
                 </span>
               ) : (
-                'Create Account'
+                <>
+                  Create Account
+                  <Sparkles className="w-4 h-4" />
+                </>
               )}
             </button>
 
             <p className="text-center text-sm text-gray-500">
               Already have an account?{' '}
-              <Link to="/login" className="text-indigo-600 hover:text-indigo-700 font-medium">
-                Sign in →
+              <Link to="/login" className="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center gap-1 group">
+                Sign in
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </p>
           </form>
