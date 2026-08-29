@@ -1,6 +1,8 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { GoogleOAuthProvider } from '@react-oauth/google'; 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { WishlistProvider } from './contexts/WishlistContext';
@@ -22,84 +24,88 @@ const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
   return (
-    // GoogleOAuthProvider - enables Google Login
     <GoogleOAuthProvider clientId={googleClientId}>
-      <Router> 
+      <Router>
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <Toaster 
-                position="top-right"
-                toastOptions={{
-                  duration: 3000,
-                  style: {
-                    background: '#363636',
-                    color: '#fff',
-                    padding: '16px',
-                    borderRadius: '8px',
-                  },
-                  success: {
+              <NotificationProvider>
+                <Toaster 
+                  position="top-right"
+                  toastOptions={{
                     duration: 3000,
-                    iconTheme: {
-                      primary: '#4ade80',
-                      secondary: '#fff',
+                    style: {
+                      background: '#363636',
+                      color: '#fff',
+                      padding: '16px',
+                      borderRadius: '8px',
                     },
-                  },
-                  error: {
-                    duration: 4000,
-                    iconTheme: {
-                      primary: '#ef4444',
-                      secondary: '#fff',
+                    success: {
+                      duration: 3000,
+                      iconTheme: {
+                        primary: '#4ade80',
+                        secondary: '#fff',
+                      },
                     },
-                  },
-                }}
-              />
-              <Layout>
-                <Routes>
-                  {/* Public Routes */}
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/product/:id" element={<ProductDetailPage />} />
+                    error: {
+                      duration: 4000,
+                      iconTheme: {
+                        primary: '#ef4444',
+                        secondary: '#fff',
+                      },
+                    },
+                  }}
+                />
+                <Layout>
+                  <Routes>
+                    {/* ===== PUBLIC ROUTES ===== */}
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/product/:id" element={<ProductDetailPage />} />
+                    
+                    {/* ✅ Confirmation is PUBLIC */}
+                    <Route path="/confirmation" element={<OrderConfirmation />} />
 
-                  {/* Protected Routes */}
-                  <Route path="/profile" element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/orders" element={
-                    <ProtectedRoute>
-                      <OrdersPage />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/order/:orderId" element={
-                    <ProtectedRoute>
-                      <OrderDetailPage />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/cart" element={
-                    <ProtectedRoute>
-                      <CartPage />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/checkout" element={
-                    <ProtectedRoute>
-                      <CheckoutPage />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/confirmation" element={
-                    <ProtectedRoute>
-                      <OrderConfirmation />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="/wishlist" element={
-                    <ProtectedRoute>
-                      <WishlistPage />
-                    </ProtectedRoute>
-                  } />
-                </Routes>
-              </Layout>
+                    {/* ===== PROTECTED ROUTES ===== */}
+                    <Route path="/profile" element={
+                      <ProtectedRoute>
+                        <ProfilePage />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="/cart" element={
+                      <ProtectedRoute>
+                        <CartPage />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="/checkout" element={
+                      <ProtectedRoute>
+                        <CheckoutPage />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="/wishlist" element={
+                      <ProtectedRoute>
+                        <WishlistPage />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="/orders" element={
+                      <ProtectedRoute>
+                        <OrdersPage />
+                      </ProtectedRoute>
+                    } />
+                    
+                    <Route path="/order/:orderId" element={
+                      <ProtectedRoute>
+                        <OrderDetailPage />
+                      </ProtectedRoute>
+                    } />
+                  </Routes>
+                </Layout>
+              </NotificationProvider>
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>
@@ -108,4 +114,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

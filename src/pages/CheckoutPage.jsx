@@ -28,18 +28,22 @@ export default function CheckoutPage() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000));
     
+    // ✅ Save data to sessionStorage
+    const orderData = {
+      orderData: data,
+      orderItems: items,
+      orderTotal: totalPrice,
+      orderDate: new Date().toISOString()
+    };
+    
+    sessionStorage.setItem('shopverse_order', JSON.stringify(orderData));
+    console.log('✅ Saved order data to sessionStorage:', orderData);
+    
     clearCart();
     setIsLoading(false);
     
-    // Redirect to confirmation
-    navigate('/confirmation', { 
-      state: { 
-        orderData: data,
-        orderItems: items,
-        orderTotal: totalPrice,
-        orderDate: new Date().toISOString()
-      }
-    });
+    // ✅ Force navigation with full page reload
+    window.location.href = '/confirmation';
   };
 
   return (

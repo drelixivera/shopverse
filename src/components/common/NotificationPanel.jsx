@@ -1,63 +1,26 @@
 // src/components/common/NotificationPanel.jsx
 // ============================================
-// NOTIFICATION PANEL (Slides in from right)
+// NOTIFICATION PANEL - WITH REAL NOTIFICATIONS
 // ============================================
+// This component renders a slide-in panel from the right side
+// that displays real notifications from the NotificationContext.
+// 
 // Features:
-// - Slides in from right side
-// - Click outside to close
-// - Escape key to close
-// - Dummy notifications (ready for real data)
-// - Mark all as read button
+// - Slides in from right with smooth animation
+// - Shows real notifications from context
+// - Mark as read on click
+// - Mark all as read
+// - Unread count badge
+// - Close on outside click or Escape key
 
 import { useEffect, useRef } from 'react';
-import { X, Package, Heart, ShoppingCart, MessageCircle, CheckCheck } from 'lucide-react';
-
-// Dummy notifications data (replace with real data later)
-const notifications = [
-  {
-    id: 1,
-    type: 'order',
-    icon: Package,
-    color: 'text-blue-500',
-    bg: 'bg-blue-50',
-    message: 'Your order #ORD-123 has been shipped!',
-    time: '2 minutes ago',
-    read: false,
-  },
-  {
-    id: 2,
-    type: 'wishlist',
-    icon: Heart,
-    color: 'text-pink-500',
-    bg: 'bg-pink-50',
-    message: 'John Doe liked your product "Wireless Headphones"',
-    time: '15 minutes ago',
-    read: false,
-  },
-  {
-    id: 3,
-    type: 'cart',
-    icon: ShoppingCart,
-    color: 'text-indigo-500',
-    bg: 'bg-indigo-50',
-    message: 'Your cart has 3 items waiting for you!',
-    time: '1 hour ago',
-    read: false,
-  },
-  {
-    id: 4,
-    type: 'message',
-    icon: MessageCircle,
-    color: 'text-green-500',
-    bg: 'bg-green-50',
-    message: 'Support sent you a new message',
-    time: '3 hours ago',
-    read: true,
-  },
-];
+import { Link } from 'react-router-dom';
+import { X } from 'lucide-react';
+import { useNotifications } from '../../contexts/NotificationContext';
 
 export default function NotificationPanel({ isOpen, onClose }) {
   const panelRef = useRef(null);
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   // Close when clicking outside
   useEffect(() => {
@@ -87,8 +50,18 @@ export default function NotificationPanel({ isOpen, onClose }) {
     };
   }, [isOpen, onClose]);
 
-  // Count unread notifications
-  const unreadCount = notifications.filter(n => !n.read).length;
+  // Mark as read when clicked
+  const handleNotificationClick = (notification) => {
+    if (!notification.read) {
+      markAsRead(notification.id);
+    }
+    onClose();
+  };
+
+  // Handle mark all as read
+  const handleMarkAllAsRead = () => {
+    markAllAsRead();
+  };
 
   return (
     <>
@@ -139,42 +112,46 @@ export default function NotificationPanel({ isOpen, onClose }) {
             </div>
           ) : (
             <div className="divide-y divide-gray-100">
-              {notifications.map((notification) => {
-                const Icon = notification.icon;
-                return (
-                  <div 
-                    key={notification.id}
-                    className={`
-                      flex items-start gap-3 p-4 hover:bg-gray-50 transition cursor-pointer
-                      ${!notification.read ? 'bg-indigo-50/30' : ''}
-                    `}
-                  >
-                    <div className={`p-2 rounded-full ${notification.bg}`}>
-                      <Icon className={`w-4 h-4 ${notification.color}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-800">
-                        {notification.message}
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {notification.time}
-                      </p>
-                    </div>
-                    {!notification.read && (
-                      <span className="w-2 h-2 bg-indigo-600 rounded-full flex-shrink-0 mt-2"></span>
-                    )}
+              {notifications.map((notification) => (
+                <div 
+                  key={notification.id}
+                  onClick={() => handleNotificationClick(notification)}
+                  className={`
+                    flex items-start gap-3 p-4 hover:bg-gray-50 transition cursor-pointer
+                    ${!notification.read ? 'bg-indigo-50/30' : ''}
+                  `}
+                >
+                  <div className="text-2xl flex-shrink-0 mt-1">{notification.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-800">
+                      {notification.title}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {notification.message}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {notification.timeAgo || 'Just now'}
+                    </p>
                   </div>
-                );
-              })}
+                  {!notification.read && (
+                    <span className="w-2 h-2 bg-indigo-600 rounded-full flex-shrink-0 mt-2"></span>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
 
         {/* Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
-          <button className="w-full text-center text-sm text-indigo-600 hover:text-indigo-700 font-medium transition">
-            Mark all as read
-          </button>
+          {notifications.length > 0 && (
+            <button 
+              onClick={handleMarkAllAsRead}
+              className="w-full text-center text-sm text-indigo-600 hover:text-indigo-700 font-medium transition"
+            >
+              Mark all as read
+            </button>
+          )}
         </div>
       </div>
     </>

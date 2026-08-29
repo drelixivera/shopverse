@@ -1,6 +1,6 @@
 // src/components/layout/Navbar.jsx
 // ============================================
-// NAVBAR - WITH NOTIFICATION PANEL
+// NAVBAR - WITH NOTIFICATION PANEL AND REAL UNREAD COUNT
 // ============================================
 
 import { useState, useEffect } from 'react';
@@ -9,6 +9,7 @@ import { ShoppingCart, Search, Menu, Heart, User, LogOut, X, Bell } from 'lucide
 import { useCart } from '../../contexts/CartContext';
 import { useWishlist } from '../../contexts/WishlistContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 import NotificationPanel from '../common/NotificationPanel';
 
 export default function Navbar() {
@@ -18,6 +19,7 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const { wishlistCount } = useWishlist();
   const { user, isAuthenticated, logout } = useAuth();
+  const { unreadCount } = useNotifications();
   const navigate = useNavigate();
 
   // Trigger bounce animation when cart count changes
@@ -111,14 +113,18 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Notification Button */}
+            {/* Notification Button - Desktop */}
             <button 
               onClick={toggleNotifications}
               className="p-2 hover:bg-gray-100 rounded-full transition relative"
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5 text-gray-700" />
-              <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </button>
 
             {isAuthenticated ? (
@@ -158,7 +164,11 @@ export default function Navbar() {
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5 text-gray-700" />
-              <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </button>
           </div>
         </div>

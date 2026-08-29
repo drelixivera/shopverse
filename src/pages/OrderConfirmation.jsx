@@ -1,20 +1,57 @@
 // src/pages/OrderConfirmation.jsx
+import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { useNotifications } from '../contexts/NotificationContext';
+import { addOrderPlacedNotification } from '../services/notifications';
 import CheckoutSteps from '../components/checkout/CheckoutSteps';
 import { CheckCircle, Package, Calendar, MapPin } from 'lucide-react';
 
 export default function OrderConfirmation() {
   const location = useLocation();
-  const { orderData, orderItems, orderTotal, orderDate } = location.state || {};
+  const { refreshNotifications } = useNotifications();
+  const [orderData, setOrderData] = useState(null);
+  const [orderItems, setOrderItems] = useState([]);
+  const [orderTotal, setOrderTotal] = useState(0);
+  const [orderDate, setOrderDate] = useState(null);
+  const [notificationAdded, setNotificationAdded] = useState(false); // ✅ Prevent duplicate notifications
 
-  // If no order data, redirect to home
+  useEffect(() => {
+    // Try to get data from sessionStorage
+    const savedData = sessionStorage.getItem('shopverse_order');
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        setOrderData(parsed.orderData);
+        setOrderItems(parsed.orderItems || []);
+        setOrderTotal(parsed.orderTotal || 0);
+        setOrderDate(parsed.orderDate || new Date().toISOString());
+        // Don't clear it immediately so it survives page refresh
+      } catch (error) {
+        console.error('Error parsing sessionStorage data:', error);
+      }
+    }
+  }, []);
+
+  // ✅ Add notification only ONCE when orderData loads
+  useEffect(() => {
+    if (orderData && !notificationAdded) {
+      console.log('🎉 Adding notification for order:', orderData);
+      addOrderPlacedNotification(orderData.id || 'ORD-001');
+      refreshNotifications();
+      setNotificationAdded(true); // ✅ Prevent duplicate notifications
+    }
+  }, [orderData, notificationAdded, refreshNotifications]);
+
+  // If no order data, show message
   if (!orderData) {
     return (
       <div className="text-center py-16">
-        <CheckoutSteps currentStep={3} />
         <h2 className="text-2xl font-semibold text-gray-700">
           No order found
         </h2>
+        <p className="text-gray-500 mt-2">
+          Something went wrong with your order. Please try again.
+        </p>
         <Link 
           to="/" 
           className="inline-block mt-4 text-indigo-600 hover:text-indigo-800"
@@ -25,14 +62,12 @@ export default function OrderConfirmation() {
     );
   }
 
-  // Generate a random order number
-  const orderNumber = `ORD-${Date.now().toString().slice(-8)}`;
+  const orderNumber = orderData.id || `ORD-${Date.now().toString().slice(-8)}`;
 
   return (
     <div className="max-w-3xl mx-auto">
       <CheckoutSteps currentStep={3} />
 
-      {/* Success Banner */}
       <div className="bg-white rounded-lg shadow-md p-8 text-center">
         <div className="flex justify-center mb-4">
           <CheckCircle className="w-20 h-20 text-green-500" />
@@ -48,7 +83,6 @@ export default function OrderConfirmation() {
         </p>
       </div>
 
-      {/* Order Details */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-lg shadow-md p-4 flex items-center gap-3">
           <Package className="w-8 h-8 text-indigo-500" />
@@ -73,7 +107,6 @@ export default function OrderConfirmation() {
         </div>
       </div>
 
-      {/* Order Summary */}
       <div className="bg-white rounded-lg shadow-md p-6 mt-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           Order Summary
@@ -101,7 +134,6 @@ export default function OrderConfirmation() {
           </div>
         </div>
 
-        {/* Shipping Address */}
         <div className="border-t border-gray-200 mt-4 pt-4">
           <h3 className="font-medium text-gray-700 mb-2">Shipping Address</h3>
           <p className="text-sm text-gray-600">
@@ -113,7 +145,6 @@ export default function OrderConfirmation() {
         </div>
       </div>
 
-      {/* Action Buttons */}
       <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
         <Link 
           to="/" 
