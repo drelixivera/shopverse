@@ -1,26 +1,32 @@
 // src/components/common/NotificationPanel.jsx
 // ============================================
-// NOTIFICATION PANEL - WITH REAL NOTIFICATIONS
+// NOTIFICATION PANEL - WITH DELETE BUTTONS
 // ============================================
-// This component renders a slide-in panel from the right side
-// that displays real notifications from the NotificationContext.
-// 
 // Features:
 // - Slides in from right with smooth animation
 // - Shows real notifications from context
 // - Mark as read on click
 // - Mark all as read
+// - Delete individual notifications (on hover)
+// - Clear all notifications
 // - Unread count badge
 // - Close on outside click or Escape key
 
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { X } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import { useNotifications } from '../../contexts/NotificationContext';
 
 export default function NotificationPanel({ isOpen, onClose }) {
   const panelRef = useRef(null);
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+  const { 
+    notifications, 
+    unreadCount, 
+    markAsRead, 
+    markAllAsRead,
+    deleteNotification,      // ✅ Add this
+    clearAllNotifications,   // ✅ Add this
+  } = useNotifications();
 
   // Close when clicking outside
   useEffect(() => {
@@ -58,9 +64,15 @@ export default function NotificationPanel({ isOpen, onClose }) {
     onClose();
   };
 
-  // Handle mark all as read
-  const handleMarkAllAsRead = () => {
-    markAllAsRead();
+  // ✅ Handle delete
+  const handleDelete = (e, notificationId) => {
+    e.stopPropagation(); // Prevent triggering the parent click
+    deleteNotification(notificationId);
+  };
+
+  // ✅ Handle clear all
+  const handleClearAll = () => {
+    clearAllNotifications();
   };
 
   return (
@@ -93,13 +105,26 @@ export default function NotificationPanel({ isOpen, onClose }) {
               </span>
             )}
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 hover:bg-gray-100 rounded-full transition"
-            aria-label="Close notifications"
-          >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* ✅ Clear All Button */}
+            {notifications.length > 0 && (
+              <button
+                onClick={handleClearAll}
+                className="text-xs text-red-500 hover:text-red-700 transition flex items-center gap-1"
+                title="Clear all notifications"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Clear All
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-1.5 hover:bg-gray-100 rounded-full transition"
+              aria-label="Close notifications"
+            >
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
         </div>
 
         {/* Notifications List */}
@@ -115,11 +140,11 @@ export default function NotificationPanel({ isOpen, onClose }) {
               {notifications.map((notification) => (
                 <div 
                   key={notification.id}
-                  onClick={() => handleNotificationClick(notification)}
                   className={`
-                    flex items-start gap-3 p-4 hover:bg-gray-50 transition cursor-pointer
+                    flex items-start gap-3 p-4 hover:bg-gray-50 transition cursor-pointer group
                     ${!notification.read ? 'bg-indigo-50/30' : ''}
                   `}
+                  onClick={() => handleNotificationClick(notification)}
                 >
                   <div className="text-2xl flex-shrink-0 mt-1">{notification.icon}</div>
                   <div className="flex-1 min-w-0">
@@ -136,6 +161,14 @@ export default function NotificationPanel({ isOpen, onClose }) {
                   {!notification.read && (
                     <span className="w-2 h-2 bg-indigo-600 rounded-full flex-shrink-0 mt-2"></span>
                   )}
+                  {/* ✅ Delete Button - Appears on hover */}
+                  <button
+                    onClick={(e) => handleDelete(e, notification.id)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 text-gray-400 hover:text-red-500 rounded-full hover:bg-red-50"
+                    aria-label="Delete notification"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
               ))}
             </div>
@@ -145,12 +178,17 @@ export default function NotificationPanel({ isOpen, onClose }) {
         {/* Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
           {notifications.length > 0 && (
-            <button 
-              onClick={handleMarkAllAsRead}
-              className="w-full text-center text-sm text-indigo-600 hover:text-indigo-700 font-medium transition"
-            >
-              Mark all as read
-            </button>
+            <div className="flex items-center justify-between">
+              <button 
+                onClick={markAllAsRead}
+                className="text-center text-sm text-indigo-600 hover:text-indigo-700 font-medium transition"
+              >
+                Mark all as read
+              </button>
+              <span className="text-xs text-gray-400">
+                {notifications.filter(n => !n.read).length} unread
+              </span>
+            </div>
           )}
         </div>
       </div>

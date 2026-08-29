@@ -8,7 +8,8 @@
 // - Add notifications (order, shipping, delivery, wishlist, cart)
 // - Mark as read/unread
 // - Mark all as read
-// - Delete notifications
+// - Delete individual notifications
+// - Clear all notifications
 // - Persist to localStorage
 
 const STORAGE_KEY = 'shopverse_notifications';
@@ -169,12 +170,18 @@ export const markAllAsRead = () => {
   return updated;
 };
 
-// Delete a notification
+// ✅ Delete a single notification
 export const deleteNotification = (notificationId) => {
   const notifications = loadNotifications();
   const updated = notifications.filter(n => n.id !== notificationId);
   saveNotifications(updated);
   return updated;
+};
+
+// ✅ Clear all notifications
+export const clearAllNotifications = () => {
+  saveNotifications([]);
+  return [];
 };
 
 // Get unread count

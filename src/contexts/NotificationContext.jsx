@@ -10,7 +10,8 @@ import {
   saveNotifications, 
   markAsRead, 
   markAllAsRead,
-  deleteNotification,
+  deleteNotification,      // ✅ Add this
+  clearAllNotifications,   // ✅ Add this
   getUnreadCount,
   getNotifications,
 } from '../services/notifications';
@@ -44,10 +45,20 @@ export function NotificationProvider({ children }) {
     setUnreadCount(0);
   };
 
+  // ✅ Handle delete a single notification
   const handleDelete = (notificationId) => {
     const updated = deleteNotification(notificationId);
     setNotifications(updated);
     setUnreadCount(getUnreadCount());
+  };
+
+  // ✅ Handle clear all notifications
+  const handleClearAll = () => {
+    if (window.confirm('Are you sure you want to clear all notifications?')) {
+      const updated = clearAllNotifications();
+      setNotifications(updated);
+      setUnreadCount(0);
+    }
   };
 
   const refreshNotifications = () => {
@@ -59,7 +70,8 @@ export function NotificationProvider({ children }) {
     unreadCount,
     markAsRead: handleMarkAsRead,
     markAllAsRead: handleMarkAllAsRead,
-    deleteNotification: handleDelete,
+    deleteNotification: handleDelete,        // ✅ Add this
+    clearAllNotifications: handleClearAll,   // ✅ Add this
     refreshNotifications,
   };
 
