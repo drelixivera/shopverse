@@ -1,11 +1,8 @@
 // src/components/product/ProductCard.jsx
-// ============================================
-// PRODUCT CARD - FIXED WISHLIST NAVIGATION
-// ============================================
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { ShoppingCart, Star } from 'lucide-react';
 import WishlistButton from '../wishlist/WishlistButton';
 import ProductImage from '../common/ProductImage';
@@ -27,11 +24,22 @@ const highlightText = (text, searchTerm) => {
 export default function ProductCard({ product, searchTerm = '' }) {
   const { addItem } = useCart();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // ✅ Check if user is logged in
+    if (!isAuthenticated) {
+      toast.error('Please log in to add items to your cart', {
+        icon: '🔒',
+      });
+      setTimeout(() => navigate('/login'), 1500);
+      return;
+    }
+    
     setIsAdding(true);
     addItem(product, 1);
     toast.success(`${product.name} added to cart!`, {
@@ -40,11 +48,9 @@ export default function ProductCard({ product, searchTerm = '' }) {
     setTimeout(() => setIsAdding(false), 800);
   };
 
-  // ✅ Fix: Stop propagation so it doesn't trigger the Link
   const handleWishlistClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // The WishlistButton handles the actual toggle internally
   };
 
   const handleCardClick = () => {
@@ -56,16 +62,10 @@ export default function ProductCard({ product, searchTerm = '' }) {
       onClick={handleCardClick}
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative cursor-pointer group"
     >
-      {/* Wishlist Button - Fixed */}
-      <div 
-        className="absolute top-1.5 right-1.5 z-10" 
-        onClick={handleWishlistClick}
-        onMouseDown={(e) => e.stopPropagation()} // ✅ Extra safety
-      >
+      <div className="absolute top-1.5 right-1.5 z-10" onClick={handleWishlistClick}>
         <WishlistButton product={product} />
       </div>
 
-      {/* Product Image */}
       <div className="relative h-36 sm:h-40 overflow-hidden bg-gray-100">
         <ProductImage 
           product={product} 
@@ -79,7 +79,6 @@ export default function ProductCard({ product, searchTerm = '' }) {
         )}
       </div>
 
-      {/* Content */}
       <div className="p-2.5 sm:p-3">
         <span className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider">
           {product.category}

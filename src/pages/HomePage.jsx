@@ -1,4 +1,8 @@
 // src/pages/HomePage.jsx
+// ============================================
+// HOME PAGE - WITH DYNAMIC HERO CAROUSEL
+// ============================================
+
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
@@ -7,26 +11,27 @@ import ProductCard from '../components/product/ProductCard';
 import SkeletonCard from '../components/common/SkeletonCard';
 import RecentViews from '../components/home/RecentViews';
 import NewsletterSignup from '../components/common/NewsletterSignup';
+import HeroCarousel from '../components/home/HeroCarousel';
+import { heroSlides } from '../data/heroSlides';
 import { Search, X, Filter } from 'lucide-react';
 
 export default function HomePage() {
-  // State Variables
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState(''); // search term after delay
-  const [selectedCategory, setSelectedCategory] = useState('All');// selected category filter
-  const [sortBy, setSortBy] = useState('featured'); // sorting option
-  const [showFilters, setShowFilters] = useState(false); //show filter on mobile
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('featured');
+  const [showFilters, setShowFilters] = useState(false);
 
-  //categories
+  // Get unique categories from products
   const categories = useMemo(() => {
     const cats = products.map(p => p.category);
     return ['All', ...new Set(cats)];
   }, [products]);
 
-  //search debouncing
+  // Debounce the search term
   const debouncedSetSearch = useCallback(
     debounce((value) => {
       setDebouncedSearch(value);
@@ -46,19 +51,19 @@ export default function HomePage() {
     debouncedSetSearch.cancel();
   };
 
-  // fetching products
+  // Fetch products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = await productService.getAllProducts(); // fetches data
-        setProducts(data); // stores product
+        const data = await productService.getAllProducts();
+        setProducts(data);
         setError(null);
       } catch (err) {
         setError('Failed to load products. Please try again.');
         console.error(err);
       } finally {
-        setLoading(false); // hide skeleton, shows products
+        setLoading(false);
       }
     };
 
@@ -71,11 +76,10 @@ export default function HomePage() {
     };
   }, [debouncedSetSearch]);
 
-  // Filtering and sorting
+  // Filter and sort products
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Filter by search
     if (debouncedSearch.trim()) {
       const term = debouncedSearch.toLowerCase().trim();
       result = result.filter(product =>
@@ -85,14 +89,12 @@ export default function HomePage() {
       );
     }
 
-    // Filter by category
     if (selectedCategory !== 'All') {
       result = result.filter(product =>
         product.category === selectedCategory
       );
     }
 
-    // sort
     switch (sortBy) {
       case 'price-low':
         result.sort((a, b) => a.price - b.price);
@@ -113,12 +115,13 @@ export default function HomePage() {
     return result;
   }, [products, debouncedSearch, selectedCategory, sortBy]);
 
-  // Loading State
+  // Loading state
   if (loading) {
     return (
       <div>
-        {/* Hero Loading Skeleton */}
-        <div className="h-64 bg-gray-200 rounded-2xl mb-10 animate-pulse"></div>
+        {/* Hero Skeleton */}
+        <div className="h-64 md:h-80 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-2xl mb-10 animate-pulse"></div>
+        
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
             <div className="h-8 bg-gray-200 rounded w-48 animate-pulse"></div>
@@ -126,7 +129,6 @@ export default function HomePage() {
           </div>
           <div className="w-full md:w-80 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
         </div>
-        {/* Product Grid Loading Skeletons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
             <SkeletonCard key={i} />
@@ -136,7 +138,6 @@ export default function HomePage() {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="text-center py-12">
@@ -151,69 +152,12 @@ export default function HomePage() {
     );
   }
 
-  // displaying pages
   return (
     <div>
-    {/* ===== HERO SECTION - IMAGE DRIVEN ===== */}
-<div className="relative rounded-2xl overflow-hidden mb-12 h-[400px] md:h-[500px] animate-fade-in">
-  {/* Background Image */}
-  <div 
-    className="absolute inset-0 bg-cover bg-center"
-    style={{
-      backgroundImage: 'url(https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200)',
-    }}
-  ></div>
-  
-  {/* Overlay - creates contrast so text is readable */}
-  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
-  
-  {/* Floating Stats - Top Right Corner */}
-  <div className="absolute top-4 right-4 md:top-6 md:right-6 z-10 bg-white/10 backdrop-blur-md rounded-xl px-4 py-2 text-white text-sm border border-white/20 hidden sm:block">
-    <span className="font-bold text-yellow-300">★ 4.8/5</span>
-    <span className="text-white/70 ml-2">• 10K+ Reviews</span>
-  </div>
-  
-  {/* Content */}
-  <div className="relative z-10 h-full flex items-center px-6 md:px-12 lg:px-16">
-    <div className="max-w-xl">
-      {/* Badge */}
-      <span className="inline-block text-xs font-semibold tracking-widest text-yellow-300 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full mb-4 animate-pulse">
-         25% discount off on gadgets
-      </span>
-      
-      {/* Heading */}
-      <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight mb-3">
-        Elevate Your
-        <span className="text-yellow-300 block">Style Game</span>
-      </h1>
-      
-      {/* Subtitle */}
-      <p className="text-base md:text-lg text-gray-200 max-w-lg mb-6">
-        Discover premium products handpicked for quality, style, and value.
-      </p>
-      
-      {/* CTAs */}
-      <div className="flex flex-wrap gap-4">
-        {/* Primary CTA */}
-        <Link
-          to="#products"
-          className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200"
-        >
-          Explore Now →
-        </Link>
-        {/* Secondary CTA */}
-        <Link
-          to="/wishlist"
-          className="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-8 py-3 rounded-lg font-medium hover:bg-white/20 transition hover:-translate-y-0.5 transform duration-200"
-        >
-          View Wishlist
-        </Link>
-      </div>
-    </div>
-  </div>
-</div>
+      {/* ===== DYNAMIC HERO CAROUSEL ===== */}
+      <HeroCarousel slides={heroSlides} />
 
-      {/* Featured Products Header */}
+      {/* ===== HEADER ===== */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Featured Products</h1>
@@ -223,6 +167,7 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          {/* Search Bar */}
           <div className="relative flex-1 sm:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -242,6 +187,7 @@ export default function HomePage() {
             )}
           </div>
 
+          {/* Filter Toggle (Mobile) */}
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="md:hidden flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm"
@@ -252,9 +198,10 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Category Filter Bar */}
+      {/* ===== FILTER BAR ===== */}
       <div className={`${showFilters ? 'block' : 'hidden md:block'} mb-6`}>
         <div className="flex flex-wrap items-center gap-3 p-3 bg-gray-50 rounded-lg">
+          {/* Category Buttons */}
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-xs text-gray-500 font-medium mr-1">Category:</span>
             {categories.map((category) => (
@@ -275,6 +222,7 @@ export default function HomePage() {
 
           <div className="w-px h-6 bg-gray-300 hidden sm:block"></div>
 
+          {/* Sort Dropdown */}
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500 font-medium">Sort:</span>
             <select
@@ -290,6 +238,7 @@ export default function HomePage() {
             </select>
           </div>
 
+          {/* Clear Filters */}
           {(selectedCategory !== 'All' || searchTerm || sortBy !== 'featured') && (
             <button
               onClick={() => {
@@ -315,7 +264,7 @@ export default function HomePage() {
         </p>
       )}
 
-      {/* No Results */}
+      {/* ===== NO RESULTS ===== */}
       {filteredProducts.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-lg shadow-md">
           <div className="text-6xl mb-4">🔍</div>
@@ -340,30 +289,31 @@ export default function HomePage() {
         </div>
       ) : (
         <>
-          {/* Product Grid - Tighter Layout */}
-  <div
-  id="products"
-  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
->
-  {filteredProducts.map((product, index) => (
-    <div
-      key={product.id}
-      className="animate-fade-in"
-      style={{ animationDelay: `${index * 50}ms` }}
-    >
-      <Link to={`/product/${product.id}`} className="block">
-        <ProductCard
-          product={product}
-          searchTerm={debouncedSearch}
-        />
-      </Link>
-    </div>
-  ))}
-  </div>
-          {/* Recent Views */}
+          {/* ===== PRODUCT GRID ===== */}
+          <div
+            id="products"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
+          >
+            {filteredProducts.map((product, index) => (
+              <div
+                key={product.id}
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <Link to={`/product/${product.id}`} className="block">
+                  <ProductCard
+                    product={product}
+                    searchTerm={debouncedSearch}
+                  />
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* ===== RECENT VIEWS ===== */}
           <RecentViews />
 
-          {/* Newsletter Section */}
+          {/* ===== NEWSLETTER ===== */}
           <div className="mt-12">
             <NewsletterSignup />
           </div>
