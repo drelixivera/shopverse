@@ -1,6 +1,6 @@
 // src/pages/LoginPage.jsx
 // ============================================
-// LOGIN PAGE - SPICED UP ✨ (No Logo)
+// LOGIN PAGE - WITH CLICKABLE TEXT LOGO
 // ============================================
 
 import { useState } from 'react';
@@ -55,9 +55,15 @@ export default function LoginPage() {
       <div className="relative w-full max-w-md">
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/50">
           
-          {/* ===== HEADER (No Logo) ===== */}
+          {/* ===== CLICKABLE TEXT LOGO ===== */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <Link 
+              to="/" 
+              className="text-3xl font-bold text-indigo-600 hover:text-indigo-700 hover:underline transition inline-block"
+            >
+              ShopVerse
+            </Link>
+            <h2 className="text-2xl font-bold text-gray-900 mt-4">
               Welcome back
             </h2>
             <p className="text-gray-500 text-sm mt-1">
