@@ -5,7 +5,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { loginUser, registerUser, getCurrentUser } from '../services/auth';
-import { jwtDecode } from 'jwt-decode'; // ✅ Add this for decoding Google tokens
+import { jwtDecode } from 'jwt-decode';  
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
       try {
         const storedToken = localStorage.getItem('auth_token');
         if (storedToken) {
-          // ✅ Check if it's a Google token or our mock token
+          // Check if it's a Google token or mock token
           const userData = await getCurrentUser(storedToken);
           setUserState(userData);
           setToken(storedToken);
@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
     initAuth();
   }, []);
 
-  // ===== EXISTING LOGIN (Email/Password) =====
+  // ===== EXISTING LOGIN FUCNTION (Email/Password) =====
   const login = async (email, password) => {
     try {
       setLoading(true);
@@ -89,7 +89,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ===== ✅ NEW: LOGIN WITH GOOGLE =====
+  // ===== LOGIN WITH GOOGLE =====
   const loginWithGoogle = (credentialResponse) => {
     try {
       // Decode the Google JWT token to get user data
@@ -151,7 +151,7 @@ export function AuthProvider({ children }) {
     isAuthenticated,
     login,
     register,
-    loginWithGoogle, // ✅ Add new function
+    loginWithGoogle,
     logout,
     setUser,
   };

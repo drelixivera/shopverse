@@ -1,14 +1,20 @@
 // src/components/layout/Navbar.jsx
+// ============================================
+// NAVBAR - WITH NOTIFICATION PANEL
+// ============================================
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, Heart, User, LogOut, X } from 'lucide-react';
+import { ShoppingCart, Search, Menu, Heart, User, LogOut, X, Bell } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useWishlist } from '../../contexts/WishlistContext';
 import { useAuth } from '../../contexts/AuthContext';
+import NotificationPanel from '../common/NotificationPanel';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { totalItems } = useCart();
   const { wishlistCount } = useWishlist();
   const { user, isAuthenticated, logout } = useAuth();
@@ -33,22 +39,53 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
+  const toggleNotifications = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-indigo-600" onClick={closeMenu}>
+          
+          {/* ===== MOBILE: Logo + Hamburger (Left side) ===== */}
+          <div className="flex items-center gap-2 md:hidden">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 hover:bg-gray-100 rounded-full transition"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6 text-gray-700" />
+              ) : (
+                <Menu className="w-6 h-6 text-gray-700" />
+              )}
+            </button>
+            
+            <Link 
+              to="/" 
+              className="text-2xl font-bold text-indigo-600" 
+              onClick={closeMenu}
+            >
+              ShopVerse
+            </Link>
+          </div>
+
+          {/* ===== DESKTOP LOGO ===== */}
+          <Link 
+            to="/" 
+            className="text-2xl font-bold text-indigo-600 hidden md:block" 
+            onClick={closeMenu}
+          >
             ShopVerse
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* ===== DESKTOP NAVIGATION ===== */}
           <div className="hidden md:flex items-center space-x-6">
             <Link to="/" className="hover:text-indigo-600 transition">
               Home
             </Link>
             
-            {/* Wishlist Link */}
             <Link to="/wishlist" className="relative p-2 hover:bg-gray-100 rounded-full transition">
               <Heart className="w-6 h-6" />
               {wishlistCount > 0 && (
@@ -62,7 +99,6 @@ export default function Navbar() {
               <Search className="w-5 h-5" />
             </button>
             
-            {/* Cart Link with Bounce Animation */}
             <Link to="/cart" className="relative p-2 hover:bg-gray-100 rounded-full transition">
               <ShoppingCart className="w-6 h-6" />
               {totalItems > 0 && (
@@ -75,7 +111,16 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Auth Section */}
+            {/* Notification Button */}
+            <button 
+              onClick={toggleNotifications}
+              className="p-2 hover:bg-gray-100 rounded-full transition relative"
+              aria-label="Notifications"
+            >
+              <Bell className="w-5 h-5 text-gray-700" />
+              <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+            </button>
+
             {isAuthenticated ? (
               <div className="flex items-center gap-4 ml-2">
                 <Link 
@@ -105,25 +150,24 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button 
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 hover:bg-gray-100 rounded-full transition"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6 text-gray-700" />
-            ) : (
-              <Menu className="w-6 h-6 text-gray-700" />
-            )}
-          </button>
+          {/* ===== MOBILE: Notification Icon (Right side) ===== */}
+          <div className="md:hidden flex items-center gap-3">
+            <button 
+              onClick={toggleNotifications}
+              className="p-2 hover:bg-gray-100 rounded-full transition relative"
+              aria-label="Notifications"
+            >
+              <Bell className="w-5 h-5 text-gray-700" />
+              <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* ===== MOBILE MENU ===== */}
         <div 
           className={`
             md:hidden overflow-hidden transition-all duration-300 ease-in-out
-            ${isMobileMenuOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}
+            ${isMobileMenuOpen ? 'max-h-[600px] opacity-100 mt-4' : 'max-h-0 opacity-0'}
           `}
         >
           <div className="flex flex-col space-y-3 pb-4 border-t border-gray-200 pt-4">
@@ -189,6 +233,12 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* ===== NOTIFICATION PANEL ===== */}
+      <NotificationPanel 
+        isOpen={isNotificationOpen} 
+        onClose={() => setIsNotificationOpen(false)} 
+      />
     </nav>
   );
 }

@@ -178,7 +178,7 @@ export default function HomePage() {
     <div className="max-w-xl">
       {/* Badge */}
       <span className="inline-block text-xs font-semibold tracking-widest text-yellow-300 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full mb-4 animate-pulse">
-        ✨ SUMMER COLLECTION
+         25% discount off on gadgets
       </span>
       
       {/* Heading */}
@@ -341,7 +341,7 @@ export default function HomePage() {
       ) : (
         <>
           {/* Product Grid - Tighter Layout */}
-<div
+  <div
   id="products"
   className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6"
 >
@@ -359,8 +359,7 @@ export default function HomePage() {
       </Link>
     </div>
   ))}
-</div>
-
+  </div>
           {/* Recent Views */}
           <RecentViews />
 
