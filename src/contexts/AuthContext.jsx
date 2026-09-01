@@ -1,6 +1,6 @@
 // src/contexts/AuthContext.jsx
 // ============================================
-// AUTH CONTEXT - WITH GOOGLE LOGIN SUPPORT
+// AUTH CONTEXT
 // ============================================
 
 import { createContext, useContext, useState, useEffect } from 'react';
@@ -11,11 +11,12 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  // state variables
   const [user, setUserState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
 
-  // Check for existing session on mount
+  // session initialization
   useEffect(() => {
     const initAuth = async () => {
       try {
@@ -37,7 +38,7 @@ export function AuthProvider({ children }) {
     initAuth();
   }, []);
 
-  // ===== EXISTING LOGIN FUCNTION (Email/Password) =====
+  // ===== LOGIN FUCNTION (Email/Password) =====
   const login = async (email, password) => {
     try {
       setLoading(true);
@@ -63,7 +64,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ===== EXISTING REGISTER (Email/Password) =====
+  // ===== REGISTER FUNCTION (Email/Password) =====
   const register = async (name, email, password) => {
     try {
       setLoading(true);
@@ -89,7 +90,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ===== LOGIN WITH GOOGLE =====
+  // ===== Google Login Function =====
   const loginWithGoogle = (credentialResponse) => {
     try {
       // Decode the Google JWT token to get user data
@@ -127,21 +128,23 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ===== EXISTING LOGOUT =====
+  // ===== LOGOUT LOGOUT =====
   const logout = () => {
-    setUserState(null);
-    setToken(null);
-    localStorage.removeItem('auth_token');
-    toast.success('Logged out successfully', {
+    setUserState(null); // clears user data from state
+    setToken(null); // Clears token from state
+    localStorage.removeItem('auth_token'); //Removes token from storage
+    toast.success('Logged out successfully', { // Shows logout confirmation
       icon: '👋',
     });
   };
 
-  // ===== EXISTING SET USER =====
+  // ===== Set User Function  =====
+  // allows updating user data from other parts of the app(profile page)
   const setUser = (newUser) => {
     setUserState(newUser);
   };
 
+  // The Provider
   const isAuthenticated = !!user;
 
   const value = {
@@ -163,6 +166,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// custom hook
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {

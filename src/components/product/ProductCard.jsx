@@ -31,7 +31,7 @@ export default function ProductCard({ product, searchTerm = '' }) {
     e.preventDefault();
     e.stopPropagation();
     
-    // ✅ Check if user is logged in
+    // Check if user is logged in before adding to cart.
     if (!isAuthenticated) {
       toast.error('Please log in to add items to your cart', {
         icon: '🔒',

@@ -1,35 +1,38 @@
 // src/pages/HomePage.jsx
 // ============================================
-// HOME PAGE - WITH CLEAR SECTION SEPARATION
+// HOME PAGE
 // ============================================
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { debounce } from 'lodash';
-import { productService } from '../services/api';
-import ProductCard from '../components/product/ProductCard';
-import SkeletonCard from '../components/common/SkeletonCard';
-import RecentViews from '../components/home/RecentViews';
-import NewsletterSignup from '../components/common/NewsletterSignup';
-import HeroCarousel from '../components/home/HeroCarousel';
-import { heroSlides } from '../data/heroSlides';
-import { Search, X, Filter } from 'lucide-react';
+import { Link } from 'react-router-dom'; // navigation to product detail
+import { debounce } from 'lodash'; // delay search until user stops typing
+import { productService } from '../services/api'; //fetches products data
+import ProductCard from '../components/product/ProductCard'; // renders each product
+import SkeletonCard from '../components/common/SkeletonCard'; // loading place holder
+import RecentViews from '../components/home/RecentViews'; // recently viewed products
+import NewsletterSignup from '../components/common/NewsletterSignup'; // email sub form
+import HeroCarousel from '../components/home/HeroCarousel'; // dynamic hero slideshow
+import { heroSlides } from '../data/heroSlides'; // data for the carousel
+import { Search, X, Filter } from 'lucide-react'; // icons
 
 export default function HomePage() {
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('featured');
-  const [showFilters, setShowFilters] = useState(false);
+  // state variables
+  const [loading, setLoading] = useState(true); // are products loading?
+  const [products, setProducts] = useState([]); // All products from API
+  const [error, setError] = useState(null); // error message if fetch fails
+  const [searchTerm, setSearchTerm] = useState(''); // what user type in search bar
+  const [debouncedSearch, setDebouncedSearch] = useState(''); // search term after delay
+  const [selectedCategory, setSelectedCategory] = useState('All'); // category filter
+  const [sortBy, setSortBy] = useState('featured'); // sorting option
+  const [showFilters, setShowFilters] = useState(false); // show filters on moblie screen
 
+  // Categories
   const categories = useMemo(() => {
     const cats = products.map(p => p.category);
     return ['All', ...new Set(cats)];
   }, [products]);
 
+  // Search Debouncing
   const debouncedSetSearch = useCallback(
     debounce((value) => {
       setDebouncedSearch(value);
@@ -49,6 +52,7 @@ export default function HomePage() {
     debouncedSetSearch.cancel();
   };
 
+  //Fetching Products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -73,9 +77,11 @@ export default function HomePage() {
     };
   }, [debouncedSetSearch]);
 
+  //
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
+    // filter by search
     if (debouncedSearch.trim()) {
       const term = debouncedSearch.toLowerCase().trim();
       result = result.filter(product =>
@@ -85,12 +91,14 @@ export default function HomePage() {
       );
     }
 
+    //filter by category
     if (selectedCategory !== 'All') {
       result = result.filter(product =>
         product.category === selectedCategory
       );
     }
 
+    // sort
     switch (sortBy) {
       case 'price-low':
         result.sort((a, b) => a.price - b.price);
@@ -111,6 +119,7 @@ export default function HomePage() {
     return result;
   }, [products, debouncedSearch, selectedCategory, sortBy]);
 
+  // Rendering
   if (loading) {
     return (
       <div>
@@ -131,6 +140,7 @@ export default function HomePage() {
     );
   }
 
+  // error state
   if (error) {
     return (
       <div className="text-center py-12">
@@ -145,6 +155,7 @@ export default function HomePage() {
     );
   }
 
+  // sucess state
   return (
     <div>
       {/* ===== 1. HERO SECTION ===== */}
