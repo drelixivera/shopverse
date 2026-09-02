@@ -1,13 +1,13 @@
 // src/pages/ProductDetailPage.jsx
 // ============================================
-// PRODUCT DETAIL PAGE - WITH QUANTITY SELECTOR
+// PRODUCT DETAIL PAGE - WITH AUTH PROTECTION
 // ============================================
 
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { productService } from '../services/api';
 import { useCart } from '../contexts/CartContext';
-import { useWishlist } from '../contexts/WishlistContext';
+import { useAuth } from '../contexts/AuthContext';
 import ReviewsSection from '../components/reviews/ReviewsSection';
 import WishlistButton from '../components/wishlist/WishlistButton';
 import ImageGallery from '../components/product/ImageGallery';
@@ -18,12 +18,14 @@ import toast from 'react-hot-toast';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const { addItem } = useCart();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -48,11 +50,17 @@ export default function ProductDetailPage() {
     fetchProduct();
   }, [id]);
 
-  const handleQuantityChange = (value) => {
-    setQuantity(Math.max(1, value));
-  };
-
+  // ===== HANDLE ADD TO CART WITH AUTH CHECK =====
   const handleAddToCart = () => {
+    // ✅ Check if user is logged in
+    if (!isAuthenticated) {
+      toast.error('Please log in to add items to your cart', {
+        icon: '🔒',
+      });
+      setTimeout(() => navigate('/login'), 1500);
+      return;
+    }
+
     if (!product.inStock) return;
 
     setIsAdding(true);
@@ -61,6 +69,10 @@ export default function ProductDetailPage() {
       icon: '🛒',
     });
     setTimeout(() => setIsAdding(false), 800);
+  };
+
+  const handleQuantityChange = (value) => {
+    setQuantity(Math.max(1, value));
   };
 
   if (loading) {
@@ -203,7 +215,7 @@ export default function ProductDetailPage() {
             </div>
           )}
 
-          {/* Add to Cart Button */}
+          {/* Add to Cart Button - Protected */}
           <button
             onClick={handleAddToCart}
             disabled={!product.inStock || isAdding}
