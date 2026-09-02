@@ -1,6 +1,6 @@
 // src/components/layout/Navbar.jsx
 // ============================================
-// NAVBAR - WITH CENTERED SEARCH MODAL
+// NAVBAR - WITH MOBILE SEARCH ICON
 // ============================================
 
 import { useState, useEffect } from 'react';
@@ -38,7 +38,6 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   // ===== EFFECTS =====
-  // Trigger bounce animation when cart count changes
   useEffect(() => {
     if (totalItems > 0) {
       setIsBouncing(true);
@@ -46,6 +45,27 @@ export default function Navbar() {
       return () => clearTimeout(timer);
     }
   }, [totalItems]);
+
+// ===== KEYBOARD SHORTCUT =====
+useEffect(() => {
+  const handleKeyDown = (e) => {
+    // Open search on '/' or 'Ctrl+K'
+    if (
+      (e.key === '/' && !e.ctrlKey && !e.metaKey) ||
+      (e.key === 'k' && (e.ctrlKey || e.metaKey))
+    ) {
+      // Don't trigger if user is typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      e.preventDefault();
+      setIsSearchOpen(true);
+    }
+  };
+
+  document.addEventListener('keydown', handleKeyDown);
+  return () => document.removeEventListener('keydown', handleKeyDown);
+}, []);
 
   // ===== HANDLERS =====
   const handleLogout = () => {
@@ -72,7 +92,6 @@ export default function Navbar() {
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
-    // Close other overlays when search opens
     if (!isSearchOpen) {
       setIsMobileMenuOpen(false);
       setIsNotificationOpen(false);
@@ -82,6 +101,8 @@ export default function Navbar() {
   const closeSearch = () => {
     setIsSearchOpen(false);
   };
+
+
 
   // ===== RENDER =====
   return (
@@ -145,7 +166,7 @@ export default function Navbar() {
               )}
             </Link>
             
-            {/* ✅ Search Icon - Centered */}
+            {/* Search Icon - Desktop */}
             <button 
               onClick={toggleSearch}
               className="p-2 hover:bg-gray-100 rounded-full transition"
@@ -167,7 +188,7 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Notification Button */}
+            {/* Notification Button - Desktop */}
             <button 
               onClick={toggleNotifications}
               className="p-2 hover:bg-gray-100 rounded-full transition relative"
@@ -211,8 +232,18 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* ===== MOBILE: Notification Icon (Right side) ===== */}
-          <div className="md:hidden flex items-center gap-3">
+          {/* ===== MOBILE: Right Side Icons (Search + Notification) ===== */}
+          <div className="md:hidden flex items-center gap-2">
+            {/* ✅ Search Icon - Mobile */}
+            <button 
+              onClick={toggleSearch}
+              className="p-2 hover:bg-gray-100 rounded-full transition"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5 text-gray-700" />
+            </button>
+            
+            {/* Notification Icon - Mobile */}
             <button 
               onClick={toggleNotifications}
               className="p-2 hover:bg-gray-100 rounded-full transition relative"
@@ -236,7 +267,6 @@ export default function Navbar() {
           `}
         >
           <div className="flex flex-col space-y-3 pb-4 border-t border-gray-200 pt-4">
-            
             <Link 
               to="/" 
               onClick={closeMenu}
