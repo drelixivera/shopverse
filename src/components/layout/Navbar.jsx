@@ -1,27 +1,43 @@
 // src/components/layout/Navbar.jsx
 // ============================================
-// NAVBAR - WITH NOTIFICATION PANEL AND REAL UNREAD COUNT
+// NAVBAR - WITH CENTERED SEARCH MODAL
 // ============================================
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, Heart, User, LogOut, X, Bell } from 'lucide-react';
+import { 
+  ShoppingCart, 
+  Search, 
+  Menu, 
+  Heart, 
+  User, 
+  LogOut, 
+  X, 
+  Bell, 
+  Home 
+} from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useWishlist } from '../../contexts/WishlistContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNotifications } from '../../contexts/NotificationContext';
 import NotificationPanel from '../common/NotificationPanel';
+import SearchModal from '../common/SearchModal';
 
 export default function Navbar() {
+  // ===== STATES =====
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isBouncing, setIsBouncing] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isBouncing, setIsBouncing] = useState(false);
+  
+  // ===== CONTEXTS =====
   const { totalItems } = useCart();
   const { wishlistCount } = useWishlist();
   const { user, isAuthenticated, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
 
+  // ===== EFFECTS =====
   // Trigger bounce animation when cart count changes
   useEffect(() => {
     if (totalItems > 0) {
@@ -31,10 +47,12 @@ export default function Navbar() {
     }
   }, [totalItems]);
 
+  // ===== HANDLERS =====
   const handleLogout = () => {
     logout();
     navigate('/');
     setIsMobileMenuOpen(false);
+    setIsNotificationOpen(false);
   };
 
   const closeMenu = () => {
@@ -43,8 +61,29 @@ export default function Navbar() {
 
   const toggleNotifications = () => {
     setIsNotificationOpen(!isNotificationOpen);
+    if (!isNotificationOpen) {
+      setIsMobileMenuOpen(false);
+    }
   };
 
+  const closeNotifications = () => {
+    setIsNotificationOpen(false);
+  };
+
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    // Close other overlays when search opens
+    if (!isSearchOpen) {
+      setIsMobileMenuOpen(false);
+      setIsNotificationOpen(false);
+    }
+  };
+
+  const closeSearch = () => {
+    setIsSearchOpen(false);
+  };
+
+  // ===== RENDER =====
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3">
@@ -53,7 +92,10 @@ export default function Navbar() {
           {/* ===== MOBILE: Logo + Hamburger (Left side) ===== */}
           <div className="flex items-center gap-2 md:hidden">
             <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={() => {
+                setIsMobileMenuOpen(!isMobileMenuOpen);
+                if (isNotificationOpen) setIsNotificationOpen(false);
+              }}
               className="p-2 hover:bg-gray-100 rounded-full transition"
               aria-label="Toggle menu"
             >
@@ -84,10 +126,16 @@ export default function Navbar() {
 
           {/* ===== DESKTOP NAVIGATION ===== */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="hover:text-indigo-600 transition">
-              Home
+            {/* Home Icon */}
+            <Link 
+              to="/" 
+              className="hover:text-indigo-600 transition p-2 rounded-full hover:bg-gray-100" 
+              aria-label="Home"
+            >
+              <Home className="w-5 h-5" />
             </Link>
             
+            {/* Wishlist Icon */}
             <Link to="/wishlist" className="relative p-2 hover:bg-gray-100 rounded-full transition">
               <Heart className="w-6 h-6" />
               {wishlistCount > 0 && (
@@ -97,10 +145,16 @@ export default function Navbar() {
               )}
             </Link>
             
-            <button className="p-2 hover:bg-gray-100 rounded-full transition">
+            {/* ✅ Search Icon - Centered */}
+            <button 
+              onClick={toggleSearch}
+              className="p-2 hover:bg-gray-100 rounded-full transition"
+              aria-label="Search"
+            >
               <Search className="w-5 h-5" />
             </button>
             
+            {/* Cart Icon */}
             <Link to="/cart" className="relative p-2 hover:bg-gray-100 rounded-full transition">
               <ShoppingCart className="w-6 h-6" />
               {totalItems > 0 && (
@@ -113,7 +167,7 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Notification Button - Desktop */}
+            {/* Notification Button */}
             <button 
               onClick={toggleNotifications}
               className="p-2 hover:bg-gray-100 rounded-full transition relative"
@@ -127,6 +181,7 @@ export default function Navbar() {
               )}
             </button>
 
+            {/* Auth Section */}
             {isAuthenticated ? (
               <div className="flex items-center gap-4 ml-2">
                 <Link 
@@ -148,7 +203,7 @@ export default function Navbar() {
             ) : (
               <Link 
                 to="/login" 
-                className="flex items-center gap-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+                className="flex items-center gap-1 bg-indigo-600 text-white px-4 py-2 rounded-lg transition"
               >
                 <User className="w-4 h-4" />
                 Sign In
@@ -173,7 +228,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* ===== MOBILE MENU ===== */}
+        {/* ===== MOBILE MENU (Slide Down) ===== */}
         <div 
           className={`
             md:hidden overflow-hidden transition-all duration-300 ease-in-out
@@ -181,11 +236,13 @@ export default function Navbar() {
           `}
         >
           <div className="flex flex-col space-y-3 pb-4 border-t border-gray-200 pt-4">
+            
             <Link 
               to="/" 
               onClick={closeMenu}
               className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition"
             >
+              <Home className="w-5 h-5 text-gray-700" />
               <span className="text-gray-700">Home</span>
             </Link>
 
@@ -247,7 +304,13 @@ export default function Navbar() {
       {/* ===== NOTIFICATION PANEL ===== */}
       <NotificationPanel 
         isOpen={isNotificationOpen} 
-        onClose={() => setIsNotificationOpen(false)} 
+        onClose={closeNotifications} 
+      />
+
+      {/* ===== SEARCH MODAL ===== */}
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={closeSearch} 
       />
     </nav>
   );
