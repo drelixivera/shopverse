@@ -1,6 +1,6 @@
 // src/components/layout/Navbar.jsx
 // ============================================
-// NAVBAR - WITH MOBILE SEARCH ICON
+// NAVBAR - WITH ABOUT PAGE LINK
 // ============================================
 
 import { useState, useEffect } from 'react';
@@ -46,26 +46,24 @@ export default function Navbar() {
     }
   }, [totalItems]);
 
-// ===== KEYBOARD SHORTCUT =====
-useEffect(() => {
-  const handleKeyDown = (e) => {
-    // Open search on '/' or 'Ctrl+K'
-    if (
-      (e.key === '/' && !e.ctrlKey && !e.metaKey) ||
-      (e.key === 'k' && (e.ctrlKey || e.metaKey))
-    ) {
-      // Don't trigger if user is typing in an input
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-        return;
+  // ===== KEYBOARD SHORTCUT FOR SEARCH =====
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (
+        (e.key === '/' && !e.ctrlKey && !e.metaKey) ||
+        (e.key === 'k' && (e.ctrlKey || e.metaKey))
+      ) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+          return;
+        }
+        e.preventDefault();
+        setIsSearchOpen(true);
       }
-      e.preventDefault();
-      setIsSearchOpen(true);
-    }
-  };
+    };
 
-  document.addEventListener('keydown', handleKeyDown);
-  return () => document.removeEventListener('keydown', handleKeyDown);
-}, []);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // ===== HANDLERS =====
   const handleLogout = () => {
@@ -101,8 +99,6 @@ useEffect(() => {
   const closeSearch = () => {
     setIsSearchOpen(false);
   };
-
-
 
   // ===== RENDER =====
   return (
@@ -154,6 +150,14 @@ useEffect(() => {
               aria-label="Home"
             >
               <Home className="w-5 h-5" />
+            </Link>
+            
+            {/* ✅ About Link */}
+            <Link 
+              to="/about" 
+              className="text-gray-700 hover:text-indigo-600 transition font-medium"
+            >
+              About
             </Link>
             
             {/* Wishlist Icon */}
@@ -234,7 +238,7 @@ useEffect(() => {
 
           {/* ===== MOBILE: Right Side Icons (Search + Notification) ===== */}
           <div className="md:hidden flex items-center gap-2">
-            {/* ✅ Search Icon - Mobile */}
+            {/* Search Icon - Mobile */}
             <button 
               onClick={toggleSearch}
               className="p-2 hover:bg-gray-100 rounded-full transition"
@@ -274,6 +278,15 @@ useEffect(() => {
             >
               <Home className="w-5 h-5 text-gray-700" />
               <span className="text-gray-700">Home</span>
+            </Link>
+
+            {/* ✅ About Link - Mobile */}
+            <Link 
+              to="/about" 
+              onClick={closeMenu}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition"
+            >
+              <span className="text-gray-700">About</span>
             </Link>
 
             <Link 

@@ -19,6 +19,7 @@ import WishlistPage from './pages/WishlistPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import OrdersPage from './pages/OrdersPage';
 import OrderDetailPage from './pages/OrderDetailPage';
+import AboutPage from './pages/AboutPage';
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -62,6 +63,7 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route path='/about' element={<AboutPage />} />
                     <Route path="/product/:id" element={<ProductDetailPage />} />
                     
                     {/* ✅ Confirmation is PUBLIC */}

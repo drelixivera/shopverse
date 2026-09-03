@@ -1,6 +1,6 @@
 // src/components/layout/Footer.jsx
 // ============================================
-// FOOTER - MODERN & POLISHED (FIXED IMPORTS)
+// FOOTER - WITH ABOUT PAGE LINK
 // ============================================
 
 import { Link } from 'react-router-dom';
@@ -45,6 +45,12 @@ export default function Footer() {
               <li>
                 <Link to="/" className="text-gray-400 hover:text-white transition">
                   Home
+                </Link>
+              </li>
+              {/* ✅ About Link */}
+              <li>
+                <Link to="/about" className="text-gray-400 hover:text-white transition">
+                  About
                 </Link>
               </li>
               <li>
